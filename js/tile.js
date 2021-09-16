@@ -1,4 +1,4 @@
-import Object from "./object";
+import GameObject from "./object.js";
 
 class Tile {
     constructor(x, y)

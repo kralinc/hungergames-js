@@ -1,5 +1,5 @@
-class Object {
+class GameObject {
 
 }
 
-export default Object;
+export default GameObject;

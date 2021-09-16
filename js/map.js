@@ -1,4 +1,4 @@
-import Tile from "./tile";
+import Tile from "./tile.js";
 
 class Map {
     constructor(size)
@@ -12,7 +12,12 @@ class Map {
         }
     }
 
-    get(x, y)
+    getSize()
+    {
+        return this.size;
+    }
+
+    getTile(x, y)
     {
         const index = y * this.size + x;
         return map[index];
