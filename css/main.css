@@ -2,7 +2,20 @@
     display: none;
 }
 
-.row {
+#game-setup-container .row {
     margin-top: 1em;
     margin-bottom: 1em;
+}
+
+#map-container {
+    height: 100%;
+    overflow: auto;
+}
+
+.tile {
+    width: 150px;
+    height: 150px;
+    box-sizing: border-box;
+    border: 1px solid black;
+    display: inline-block;
 }

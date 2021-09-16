@@ -64,6 +64,7 @@ function startGame()
     SINGLETON = new Singleton(4);
     const allTributes = compileTributes();
     SINGLETON.tributes = allTributes;
+    createMap();
     $("#game-setup").addClass("hidden");
     $("#game-container").removeClass("hidden");
 }
@@ -83,6 +84,23 @@ function compileTributes()
     }
 
     return tributes;
+}
+
+function createMap()
+{
+    for (let i = 0; i < SINGLETON.map.size; i++)
+    {
+        $("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
+        for (let j = 0; j < SINGLETON.map.size; j++)
+        {
+            $(`#map-row-${i}`).append(`<div class='tile'></div>`)
+        }
+    }
+    // for (let i = 0; i < SINGLETON.map.size * SINGLETON.map.size; i++)
+    // {
+    //     const newRow = `<div class='tile'></div>`
+    //     $("#map-container").append(newRow);
+    // }
 }
 
 function step()

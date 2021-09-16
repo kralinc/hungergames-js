@@ -1,20 +1,23 @@
-import GameObject from "./object.js";
+import {Item, ItemUtil} from "./object.js";
 
 class Tile {
     constructor(x, y)
     {
         this.x = x;
         this.y = y;
-        this.objects = [];
+        this.items = this.populateWithRandomItems();
         this.tributes = [];
     }
 
+    populateWithRandomItems()
+    {
 
+    }
 
     findRandomObject()
     {
-        const object = (this.objects.length > 0) ? this.objects.pop() : null;
-        return object;
+        const item = (this.items.length > 0) ? this.items.pop() : null;
+        return item;
     }
 }
 
