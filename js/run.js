@@ -37,11 +37,19 @@ function createDistricts(num)
 
             for (let i = currentDistricts; i < num; i++)
             {
-                const newDistrict = "<div id='dset-"+i+"' class='district col-12 col-lg-4'><input class='form-control' type='text' value='District " 
-                                    + (i + 1)
-                                    + "'/><div class='container'><div class='row'><div class='col-12'><input type='text' value='" 
-                                    + Tribute.getRandomName() + "'></div><div class='col-12'><input type='text' value='" 
-                                    + Tribute.getRandomName() + "'></div>   </div></div></div>";
+                const newDistrict = `<div id='dset-${i}' class='district col-12 col-lg-4'>
+                                        <input id='d-name-${i}'class='form-control' type='text' value='District ${(i+1)}'/>
+                                        <div class='container'>
+                                            <div class='row'>
+                                                <div class='col-12'>
+                                                    <input id='t-name-1-${i}' type='text' value='${Tribute.getRandomName()}'>
+                                                </div>
+                                                <div class='col-12'>
+                                                    <input id='t-name-2-${i}' type='text' value='${Tribute.getRandomName()}'>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>`;
 
                 setupContainer.append(newDistrict);
             }
@@ -53,18 +61,41 @@ function createDistricts(num)
 
 function startGame()
 {
-    SINGLETON = new SINGLETON();
+    SINGLETON = new Singleton(4);
     const allTributes = compileTributes();
-    $("game-setup").addClass("hidden");
+    SINGLETON.tributes = allTributes;
+    $("#game-setup").addClass("hidden");
+    $("#game-container").removeClass("hidden");
 }
 
 function compileTributes()
 {
-    
+    $(".district .hidden").remove();
+    const districtList = $(".district");
+    let tributes = [];
+    for (let i = 0; i < districtList.length; i++)
+    {
+        const districtName = $("#d-name-" + i).val();
+        const trib1Name = $("#t-name-1-" + i).val();
+        const trib2Name = $("#t-name-2-" + i).val();
+        tributes.push(new Tribute(trib1Name, districtName, 0xF00, "warm", SINGLETON.map));
+        tributes.push(new Tribute(trib2Name, districtName, 0xF00, "warm", SINGLETON.map));
+    }
+
+    return tributes;
+}
+
+function step()
+{
+    SINGLETON.stepDay();
 }
 
 $("#start-game").on('click', () => {
     startGame();
+});
+
+$("#step").on('click', () => {
+    step();
 });
 
 $("#num-districts").on('change', (e) => {

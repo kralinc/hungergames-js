@@ -1,9 +1,10 @@
 import Pos from "./util.js";
 
 class Tribute {
-    constructor(name, color, personality, map)
+    constructor(name, district, color, personality, map)
     {
         this.name = name;
+        this.district = district;
         this.color = color;
         this.personality = personality;
         this.map = map;
@@ -17,6 +18,11 @@ class Tribute {
         }
         this.position = new Pos(this.map.getSize() / 2, this.map.getSize() / 2);
 
+    }
+
+    act()
+    {
+        alert (`${this.name} from ${this.district} did a thing.`);
     }
 
     static getRandomName()

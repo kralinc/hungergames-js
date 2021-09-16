@@ -8,7 +8,7 @@ class Map {
 
         for (let i = 0; i < size; i++)
         {
-            map.push(new Tile(i % size, i / size));
+            this.map.push(new Tile(i % size, i / size));
         }
     }
 
