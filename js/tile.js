@@ -11,7 +11,14 @@ class Tile {
 
     populateWithRandomItems()
     {
+        let itemList = [];
+        const numRandomItems = Math.floor(Math.random() * (10-1) + 1) + 1;
+        for (let i = 0; i < numRandomItems; i++)
+        {
+            itemList.push(ItemUtil.getRandomItem());
+        }
 
+        return itemList;
     }
 
     findRandomObject()

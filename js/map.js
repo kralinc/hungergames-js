@@ -6,7 +6,7 @@ class Map {
         this.size = size;
         this.map = [];
 
-        for (let i = 0; i < size; i++)
+        for (let i = 0; i < size * size; i++)
         {
             this.map.push(new Tile(i % size, i / size));
         }
@@ -20,7 +20,7 @@ class Map {
     getTile(x, y)
     {
         const index = y * this.size + x;
-        return map[index];
+        return this.map[index];
     }
 }
 

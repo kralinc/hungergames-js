@@ -1,7 +1,7 @@
-import RandomFromWeight from "./util.js";
+import {Util} from "./util.js";
 
 class Item {
-    Item(type, name, strength)
+    constructor(type, name, strength)
     {
         this.type = type;
         this.name = name;
@@ -20,7 +20,7 @@ class ItemUtil {
         const slashweight = 0.85;
         const shootweight = 0.3;
 
-        const itemType = RandomFromWeight([
+        const itemType = Util.randomFromWeight([
             ["food", foodweight],
             ["water", waterweight],
             ["medicine", medicineweight],
@@ -35,7 +35,7 @@ class ItemUtil {
 
     static getRandomWithinType(type)
     {
-        const itemList = this.ITEM_MASTERLIST[type];
+        const itemList = ItemUtil.ITEM_MASTERLIST[type];
         const index = Math.floor(Math.random() * itemList.length);
         return itemList[index];
     }
@@ -63,4 +63,4 @@ class ItemUtil {
     };
 }
 
-export default {Item, ItemUtil};
+export {Item, ItemUtil};

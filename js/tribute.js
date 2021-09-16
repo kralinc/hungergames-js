@@ -1,4 +1,4 @@
-import Pos from "./util.js";
+import {Pos} from "./util.js";
 
 class Tribute {
     constructor(name, district, color, personality, map)
@@ -13,16 +13,19 @@ class Tribute {
         this.thirst = 100;
         this.debuffs = [];
         this.inventory = {
-            weapon: null,
-            storage: null,
         }
         this.position = new Pos(this.map.getSize() / 2, this.map.getSize() / 2);
 
     }
 
+    getTile()
+    {
+        return this.map.getTile(this.position.x, this.position.y);
+    }
+
     act()
     {
-        alert (`${this.name} from ${this.district} did a thing.`);
+        alert (`${this.name} from ${this.district} found a ${this.getTile().findRandomObject().name}`);
     }
 
     static getRandomName()
