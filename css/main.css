@@ -7,8 +7,12 @@
     margin-bottom: 1em;
 }
 
-#map-container {
+#game-container {
     height: 100%;
+}
+
+#map-container {
+    width: 615px;
     overflow: auto;
 }
 
@@ -18,4 +22,9 @@
     box-sizing: border-box;
     border: 1px solid black;
     display: inline-block;
+}
+
+#printout {
+    overflow: auto;
+    height: 600px;
 }

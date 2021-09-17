@@ -58,6 +58,11 @@ class Util {
 
         return weights[weights.length - 1][0];
     }
+
+    static randInt(min, max)
+    {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
 }
 
 export {Pos, Util};

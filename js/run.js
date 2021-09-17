@@ -108,6 +108,11 @@ function step()
     SINGLETON.stepDay();
 }
 
+function skip()
+{
+    SINGLETON.runDay();
+}
+
 $("#start-game").on('click', () => {
     startGame();
 });
@@ -115,6 +120,10 @@ $("#start-game").on('click', () => {
 $("#step").on('click', () => {
     step();
 });
+
+$("#skip").on('click', () => {
+    skip();
+})
 
 $("#num-districts").on('change', (e) => {
     console.log(e.target.value);
