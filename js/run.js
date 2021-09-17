@@ -71,7 +71,7 @@ function startGame()
 
 function compileTributes()
 {
-    $(".district .hidden").remove();
+    $(".district.hidden").remove();
     const districtList = $(".district");
     let tributes = [];
     for (let i = 0; i < districtList.length; i++)

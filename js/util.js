@@ -43,14 +43,14 @@ class Util {
         //redo weights
         for (let item of weights)
         {
-            item[1] = item[1] / sum;
+            item[1] = 1 - (item[1] / sum);
         }
 
         const rand = Math.random();
 
         for (let item of weights)
         {
-            if (item[1] > rand)
+            if (item[1] < rand)
             {
                 return item[0];
             }

@@ -23,7 +23,7 @@ class Singleton {
         }
         else
         {
-            this.tributes[this.currentTribute++].act();
+            this.tributes[(this.currentTribute === this.tributes.length) ? 0 : this.currentTribute++].act();
         }
     }
 }
