@@ -1,5 +1,7 @@
 import Map from './map.js';
 
+const EVENT_CHANCE = 0.06;
+
 class Singleton {
     constructor(mapSize)
     {
@@ -8,16 +10,18 @@ class Singleton {
         this.numTributes = this.numDistricts * 2;
         this.tributes = [];
         this.deadTributes = [];
+        this.deadQueue = [];
         this.currentTribute = 0;
         this.map = new Map(mapSize);
+        this.phase = "cornucopia"; //day, night, events
     }
 
     runDay()
     {
-        for (let i = this.currentTribute; i < this.tributes.length; i++)
+        do
         {
             this.stepDay();
-        }
+        }while (this.currentTribute > 0);
     }
 
     stepDay()
@@ -28,24 +32,60 @@ class Singleton {
         }
         else if (this.tributes.length === 1)
         {
-            alert (`${this.tributes[0].name} has won the hunger games!`);
+            const lastTribute = this.tributes[0];
+            $("#printout").prepend(`<p style='color:${lastTribute.color}'>
+            ${lastTribute.name} of ${lastTribute.district} has won the hunger games!
+            </p>`);
         }
         else
         {
-            const action = this.tributes[this.currentTribute].act();
-            $("#printout").prepend(`<p color='${this.tributes[this.currentTribute].color}'>${action}</p>`);
-
-            if (action.includes(this.tributes[this.currentTribute].name + " died")) {
-                this.processDeath(this.currentTribute);
-            }
+            const action = this.tributes[this.currentTribute].act(this.phase);
+            $("#printout").prepend(`<p style='color:${this.tributes[this.currentTribute].color}'>${action}</p>`);
+            this.#processDeaths(this.deadQueue);
             this.currentTribute = (this.currentTribute === this.tributes.length - 1) ? 0 : this.currentTribute + 1;
+
+            if (this.currentTribute == 0)
+            {
+                if (this.phase == "night")
+                {
+                    this.day++;
+                    this.phase = "day";
+                }else {
+                    this.phase = "night";
+                }
+                $("#printout").prepend(`</br><p>${this.phase} ${this.day}</p></br>`)
+            }
         }
     }
 
-    processDeath(tributeIndex)
+    putInDeathQueue(tribute)
     {
-        this.deadTributes.push(this.tributes.splice(tributeIndex, 1));
-        this.currentTribute--;
+        this.deadQueue.push(tribute);
+    }
+
+    #processDeaths(deadTributes)
+    {
+        if (this.deadQueue.length <= 0)
+        {
+            return;
+        }
+
+        for (let tribute of deadTributes) {
+            const deadIndex = this.tributes.indexOf(tribute);
+            const dead = this.tributes.splice(deadIndex, 1)[0];
+
+            $(`#trib-${dead.id}`).css("background-color", "black");
+            dead.getTile().tributes.splice(dead.getTile().tributes.indexOf(dead), 1);
+
+            this.deadTributes.push(dead);
+            $("#stats").prepend(`<p>${dead.name}: ${dead.district}</p>`);
+
+            if (this.currentTribute <= deadIndex && this.currentTribute != 0)
+            {
+                this.currentTribute--;
+            }
+        }
+        this.deadQueue = [];
     }
 }
 

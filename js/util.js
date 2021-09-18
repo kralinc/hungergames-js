@@ -63,6 +63,16 @@ class Util {
     {
         return Math.floor(Math.random() * (max - min + 1)) + min;
     }
+
+    static randomWebSafeColor()
+    {
+        const colors = ["3", "6", "9", "C"];
+
+        const char1 = colors[Util.randInt(0, colors.length - 1)];
+        const char2 = colors[Util.randInt(0, colors.length - 1)];
+        const char3 = colors[Util.randInt(0, colors.length - 1)];
+        return "#" + char1 + char2 + char3;
+    }
 }
 
 export {Pos, Util};

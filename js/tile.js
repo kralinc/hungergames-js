@@ -1,5 +1,8 @@
 import {Item, ItemUtil} from "./object.js";
 
+const MIN_RANDOM_ITEMS = 4;
+const MAX_RANDOM_ITEMS = 15;
+
 class Tile {
     constructor(x, y)
     {
@@ -11,8 +14,9 @@ class Tile {
 
     populateWithRandomItems()
     {
+        const max = (this.x == 2 && this.y == 2) ? MAX_RANDOM_ITEMS * 3 : MAX_RANDOM_ITEMS;
         let itemList = [];
-        const numRandomItems = Math.floor(Math.random() * (10-1) + 1) + 1;
+        const numRandomItems = Math.floor(Math.random() * (max-MIN_RANDOM_ITEMS) + 1) + MIN_RANDOM_ITEMS;
         for (let i = 0; i < numRandomItems; i++)
         {
             itemList.push(ItemUtil.getRandomItem());
