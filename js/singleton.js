@@ -42,7 +42,7 @@ class Singleton {
             const action = this.tributes[this.currentTribute].act(this.phase);
             $("#printout").prepend(`<p style='color:${this.tributes[this.currentTribute].color}'>${action}</p>`);
             this.#processDeaths(this.deadQueue);
-            this.currentTribute = (this.currentTribute === this.tributes.length - 1) ? 0 : this.currentTribute + 1;
+            this.currentTribute = (this.currentTribute >= this.tributes.length - 1) ? 0 : this.currentTribute + 1;
 
             if (this.currentTribute == 0)
             {
@@ -74,7 +74,9 @@ class Singleton {
             const deadIndex = this.tributes.indexOf(tribute);
             const dead = this.tributes.splice(deadIndex, 1)[0];
 
-            $(`#trib-${dead.id}`).css("background-color", "black");
+            $(`#trib-${dead.id}`).css("background-color", "white");
+            $(`#trib-${dead.id}`).css("background-image", "url(http://cdn.onlinewebfonts.com/svg/img_493013.png)");
+            $(`#trib-${dead.id}`).css("background-size", "cover");
             dead.getTile().tributes.splice(dead.getTile().tributes.indexOf(dead), 1);
 
             this.deadTributes.push(dead);

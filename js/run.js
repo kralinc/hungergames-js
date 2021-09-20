@@ -84,12 +84,22 @@ function compileTributes()
         tributes.push(new Tribute(i * 2, trib1Name, districtName, Util.randomWebSafeColor(), "warm", SINGLETON.map, SINGLETON));
         let lastTribute = tributes[tributes.length - 1];
         $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
-        .append(`<div id='trib-${lastTribute.id}'class='tribute' style='background-color: ${lastTribute.color}'>`);
+        .append(`<div 
+                    id='trib-${lastTribute.id}'
+                    class='tribute' 
+                    style='background-color: ${lastTribute.color}'
+                    data-bs-toggle='tooltip' data-bs-placement='top' 
+                    title='${lastTribute.name}, ${lastTribute.district}'>`);
 
         tributes.push(new Tribute(i * 2 + 1, trib2Name, districtName, Util.randomWebSafeColor(), "warm", SINGLETON.map, SINGLETON));
         lastTribute = tributes[tributes.length - 1];
         $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
-        .append(`<div id='trib-${lastTribute.id}'class='tribute' style='background-color: ${lastTribute.color}'>`);
+        .append(`<div 
+                    id='trib-${lastTribute.id}'
+                    class='tribute' 
+                    style='background-color: ${lastTribute.color}'
+                    data-bs-toggle='tooltip' data-bs-placement='top' 
+                    title='${lastTribute.name}, ${lastTribute.district}'>`);
     }
 
     return tributes;
@@ -121,6 +131,10 @@ function skip()
 {
     SINGLETON.runDay();
 }
+
+$(document).ready(() => {
+    $("[data-bs-toggle='tooltip']").tooltip();
+})
 
 $("#start-game").on('click', () => {
     startGame();

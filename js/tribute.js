@@ -34,6 +34,9 @@ class Tribute {
 
     act(phase)
     {
+
+        this.sleeping = false;
+
         if (this.hunger <= 0)
         {
             this.singleton.putInDeathQueue(this);
@@ -49,13 +52,17 @@ class Tribute {
         let moveWeight = 1;
         let foodWeight = 1 * (10/(this.hunger - 5));
         let waterWeight = 1 * (10/(this.thirst - 5));
-        let fightWeight = 1 * (this.health / 100) * ((this.getTile().tributes.length > 1) ? 1 : 0);
+        let weaponWeight = 2 * (this.hasWeapon() ? 1 : 0.1);
+        let fightWeight = 1 * (this.health / 100) //less likely to fight if injured
+                            * ((this.getTile().tributes.length > 1) ? 1 : 0) //won't fight if there isn't anyone to fight
+                            * ((this.hasWeapon()) ? 1 : 0.4); //much less likely to fight if unarmed
         let sleepWeight = ((phase == "night") ? 1 : 0) * 1.5;
 
         let actionToTake = Util.randomFromWeight(
             [["move", moveWeight],
             ["getfood", foodWeight],
             ["getWater", waterWeight],
+            ["getWeapon", weaponWeight],
             ["fight", fightWeight],
             ["sleep", sleepWeight]]
         );
@@ -81,9 +88,13 @@ class Tribute {
         {
             actionTaken = this.#getWater();
         }
+        else if (actionToTake == "getWeapon")
+        {
+            actionTaken = this.#forage("weapon");
+        }
         else if (actionToTake == "fight")
         {
-            actionTaken = this.#fight();
+            actionTaken = this.#fight(phase);
         }
         else if (actionToTake == "sleep")
         {
@@ -174,28 +185,65 @@ class Tribute {
         this.inventory[item.type].push(item);
     }
 
-    #fight()
+    #fight(phase)
     {
         const opponent = this.targetRandomTributeInTile();
         let thisWinWeight = 1;
         let opponentWinWeight = 1;
+        this.weapon = null;
+        opponent.weapon = null;
+
+        if (phase == "night" && opponent.sleeping)
+        {
+            
+        }
+        else
+        {
+
         if (this.hasItemOfType("weapon-slash"))
         {
             thisWinWeight += 5;
+            this.weapon = this.inventory["weapon-slash"][0];
             if (opponent.hasItemOfType("weapon-slash"))
             {
                 opponentWinWeight += 5;
+                opponent.weapon = opponent.inventory["weapon-slash"][0];
+            }
+        }
+
+        if (this.hasItemOfType("weapon-shoot"))
+        {
+            thisWinWeight += 10;
+            this.weapon = this.inventory["weapon-shoot"][0];
+            if (opponent.hasItemOfType("weapon-shoot"))
+            {
+                opponentWinWeight += 10;
+                opponent.weapon = opponent.inventory["weapon-slash"][0];
             }
         }
 
         const fightResult = Util.randomFromWeight([["this", thisWinWeight], ["opponent", opponentWinWeight]]);
         const winner = (fightResult == "this") ? this : opponent;
-        const loser = (winner == "this") ? opponent : this;
+        const loser = (winner == this) ? opponent : this;
+
+        let winnerMaxHealthLost = 10;
+        if (loser.weapon != null)
+        {
+            winnerMaxHealthLost += 20;
+        }
+
+        let loserMinHealthLost = 50;
+        if (winner.weapon != null)
+        {
+            loserMinHealthLost += 25;
+        }
 
         loser.health -= Util.randInt(50, 100);
-        winner.health -= Util.randInt(0, 50);
+        winner.health -= Util.randInt(0, winnerMaxHealthLost);
+        let thisWeaponText = (this.weapon == null) ? " unarmed," : ` armed with a ${this.weapon.name},`;
+        let opponentWeaponText = (opponent.weapon == null) ? " unarmed," : ` armed with a ${opponent.weapon.name},`;
 
-        let output = `${this.name} fought ${opponent.name}, ${winner.name} bested ${loser.name}. `;
+        let output = `${this.name},${thisWeaponText} fought ${opponent.name},${opponentWeaponText} ${winner.name} bested ${loser.name}. `;
         if (opponent.health <= 0)
         {
             this.singleton.putInDeathQueue(opponent);
@@ -204,15 +252,17 @@ class Tribute {
 
         if (this.health <= 0)
         {
-            this.singleton.putInDeathQueue(opponent);
+            this.singleton.putInDeathQueue(this);
             output += `${this.name} died fighting.`;
         }
 
         return output;
+        }
     }
 
     #sleep()
     {
+        this.sleeping = true;
         this.health += (this.health == 100) ? 0 : SLEEP_HEALTH_REGEN;
         return `${this.name} rests for the night.`;
     }
@@ -223,6 +273,14 @@ class Tribute {
         let tributesExcludingSelf = [...this.getTile().tributes];
         tributesExcludingSelf.splice(thisIndex, 1);
         return tributesExcludingSelf[Util.randInt(0, tributesExcludingSelf.length - 1)];
+    }
+
+    hasWeapon()
+    {
+        return this.hasItemOfType("weapon-shoot")
+                ||  this.hasItemOfType("weapon-stab")
+                ||  this.hasItemOfType("weapon-short")
+                ||  this.hasItemOfType("weapon-slash");
     }
 
     static getRandomName()

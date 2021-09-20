@@ -1,7 +1,7 @@
 import {Item, ItemUtil} from "./object.js";
 
-const MIN_RANDOM_ITEMS = 4;
-const MAX_RANDOM_ITEMS = 15;
+const MIN_RANDOM_ITEMS = 10;
+const MAX_RANDOM_ITEMS = 20;
 
 class Tile {
     constructor(x, y)
