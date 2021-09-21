@@ -73,27 +73,27 @@ class ItemUtil {
         'weapon-stab': [
             {name: 'flint spear', strength: 1},
             {name: 'gold spear', strength: 1},
-            {name: 'shiv on a stick', strength: 1},
+            {name: 'shiv on a stick', strength: 0.66},
             {name: 'trident', strength: 2},
             {name: 'pike', strength: 1.4},
         ],
         'weapon-slash': [
             {name: 'gladius', strength: 1},
             {name: 'broadsword', strength: 1},
-            {name: 'katana', strength: 1},
-            {name: 'longsword', strength: 1},
-            {name: 'sabre', strength: 1},
+            {name: 'katana', strength: 1.5},
+            {name: 'longsword', strength: 1.5},
+            {name: 'sabre', strength: 1.1},
         ],
         'weapon-shoot': [
-            {name: 'crossbow', strength: 1.1},
-            {name: 'bow', strength: 1.1},
-            {name: 'compound bow', strength: 1.1},
+            {name: 'a crossbow', strength: 1.1},
+            {name: 'a bow', strength: 1.1},
+            {name: 'a compound bow', strength: 1.1},
         ],
         'weapon-short': [
-            {name: 'shiv', strength: 0.8},
-            {name: 'hunting knife', strength: 1.5},
-            {name: 'steak knife', strength: 0.5},
-            {name: 'dagger', strength: 0.5},
+            {name: 'a shiv', strength: 0.8},
+            {name: 'a hunting knife', strength: 1.5},
+            {name: 'a steak knife', strength: 0.5},
+            {name: 'a dagger', strength: 1},
         ]
     };
 }

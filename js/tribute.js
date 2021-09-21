@@ -49,7 +49,7 @@ class Tribute {
             return `${this.name} died of thirst.`;
         }
 
-        let moveWeight = 1;
+        let moveWeight = 1 * ((this.previouslyFoundNothing && phase != "night") ? 3 : 1);
         let foodWeight = 1 * (10/(this.hunger - 5));
         let waterWeight = 1 * (10/(this.thirst - 5));
         let weaponWeight = 1.5 * (this.hasWeapon() ? 0.1 : 1);
@@ -112,6 +112,7 @@ class Tribute {
 
     #move()
     {
+        this.previouslyFoundNothing = false;
         this.getTile().tributes.splice(this.getTile().tributes.indexOf(this), 1);
         const moveX = Util.randInt((this.position.x == 0) ? 1 : -1, (this.position.x == this.map.size - 1) ? -1 : 1);
         const moveY = Util.randInt((this.position.y == 0) ? 1 : -1, (this.position.y == this.map.size - 1) ? -1 : 1);
@@ -166,6 +167,7 @@ class Tribute {
         const itemForaged = this.getTile().findRandomObject();
         if (itemForaged == null || Math.random() < FORAGE_FIND_NOTHING_CHANCE)
         {
+            this.previouslyFoundNothing = true;
             return `${this.name} foraged for ${target}, but found nothing.`;
         }
         else {
@@ -188,10 +190,8 @@ class Tribute {
     #fight(phase)
     {
         const opponent = this.targetRandomTributeInTile();
-        let thisWinWeight = 1;
-        let opponentWinWeight = 1;
-        this.weapon = null;
-        opponent.weapon = null;
+        let thisWinWeight = 1 + this.#drawWeapon(this);
+        let opponentWinWeight = 1 + this.#drawWeapon(opponent);
 
         if (phase == "night" && opponent.sleeping)
         {
@@ -199,50 +199,6 @@ class Tribute {
         }
         else
         {
-
-        if (this.hasItemOfType("weapon-slash"))
-        {
-            thisWinWeight += 5;
-            this.weapon = this.inventory["weapon-slash"][0];
-            if (opponent.hasItemOfType("weapon-slash"))
-            {
-                opponentWinWeight += 5;
-                opponent.weapon = opponent.inventory["weapon-slash"][0];
-            }
-        }
-
-        if (this.hasItemOfType("weapon-stab"))
-        {
-            thisWinWeight += 7;
-            this.weapon = this.inventory["weapon-stab"][0];
-            if (opponent.hasItemOfType("weapon-stab"))
-            {
-                opponentWinWeight += 7;
-                opponent.weapon = opponent.inventory["weapon-stab"][0];
-            }
-        }
-
-        if (this.hasItemOfType("weapon-shoot"))
-        {
-            thisWinWeight += 10;
-            this.weapon = this.inventory["weapon-shoot"][0];
-            if (opponent.hasItemOfType("weapon-shoot"))
-            {
-                opponentWinWeight += 10;
-                opponent.weapon = opponent.inventory["weapon-slash"][0];
-            }
-        }
-
-        if (this.hasItemOfType("weapon-short"))
-        {
-            thisWinWeight += 1;
-            this.weapon = this.inventory["weapon-short"][0];
-            if (opponent.hasItemOfType("weapon-short"))
-            {
-                opponentWinWeight += 1;
-                opponent.weapon = opponent.inventory["weapon-short"][0];
-            }
-        }
 
         const fightResult = Util.randomFromWeight([["this", thisWinWeight], ["opponent", opponentWinWeight]]);
         const winner = (fightResult == "this") ? this : opponent;
@@ -262,14 +218,17 @@ class Tribute {
 
         loser.health -= Util.randInt(50, 100);
         winner.health -= Util.randInt(0, winnerMaxHealthLost);
-        let thisWeaponText = (this.weapon == null) ? " unarmed," : ` armed with a ${this.weapon.name},`;
-        let opponentWeaponText = (opponent.weapon == null) ? " unarmed," : ` armed with a ${opponent.weapon.name},`;
+        let thisWeaponText = (this.weapon == null) ? " unarmed," : ` armed with ${this.weapon.name},`;
+        let opponentWeaponText = (opponent.weapon == null) ? " unarmed." : ` armed with ${opponent.weapon.name}. `;
 
-        let output = `${this.name},${thisWeaponText} fought ${opponent.name},${opponentWeaponText} ${winner.name} bested ${loser.name}. `;
+        let output = `${this.name},${thisWeaponText} fought ${opponent.name},${opponentWeaponText} `;
         if (opponent.health <= 0)
         {
             this.singleton.putInDeathQueue(opponent);
             output += `${opponent.name} died in battle. `;
+        }else if (opponent.health <= 15)
+        {
+            output += `${this.name} gravely wounded ${opponent.name}. `;
         }
 
         if (this.health <= 0)
@@ -277,9 +236,42 @@ class Tribute {
             this.singleton.putInDeathQueue(this);
             output += `${this.name} died fighting.`;
         }
+        else if (this.health <= 15)
+        {
+            output += `${opponent.name} gravely wounded ${this.name}.`;
+        }
 
         return output;
         }
+    }
+
+    #drawWeapon(tribute)
+    {
+        tribute.weapon = null;
+        let weaponWeight = 0;
+
+        if (tribute.hasItemOfType("weapon-shoot"))
+        {
+            tribute.weapon = tribute.inventory["weapon-shoot"][0];
+            weaponWeight = 6 * tribute.weapon.strength;
+        }
+        else if (tribute.hasItemOfType("weapon-slash"))
+        {
+            tribute.weapon = tribute.inventory["weapon-slash"][0];
+            weaponWeight = 4 * tribute.weapon.strength;
+        }
+        else if (tribute.hasItemOfType("weapon-stab"))
+        {
+            tribute.weapon = tribute.inventory["weapon-stab"][0];
+            weaponWeight = 4 * tribute.weapon.strength;
+        }
+        else if (tribute.hasItemOfType("weapon-short"))
+        {
+            tribute.weapon = tribute.inventory["weapon-short"][0];
+            weaponWeight = 2 * tribute.weapon.strength;
+        }
+
+        return weaponWeight;
     }
 
     #sleep()
