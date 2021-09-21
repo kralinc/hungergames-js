@@ -3,7 +3,7 @@ import {Pos, Util} from "./util.js";
 const DEFAULT_FOOD_STRENGTH = 20;
 const HUNGER_DEPLETION = 2;
 const THIRST_DEPLETION = 3;
-const FORAGE_FIND_NOTHING_CHANCE = 0.33;
+const FORAGE_FIND_NOTHING_CHANCE = 0.1;
 const SLEEP_HEALTH_REGEN = 5;
 
 class Tribute {
@@ -52,11 +52,11 @@ class Tribute {
         let moveWeight = 1;
         let foodWeight = 1 * (10/(this.hunger - 5));
         let waterWeight = 1 * (10/(this.thirst - 5));
-        let weaponWeight = 2 * (this.hasWeapon() ? 1 : 0.1);
+        let weaponWeight = 1.5 * (this.hasWeapon() ? 0.1 : 1);
         let fightWeight = 1 * (this.health / 100) //less likely to fight if injured
                             * ((this.getTile().tributes.length > 1) ? 1 : 0) //won't fight if there isn't anyone to fight
                             * ((this.hasWeapon()) ? 1 : 0.4); //much less likely to fight if unarmed
-        let sleepWeight = ((phase == "night") ? 1 : 0) * 1.5;
+        let sleepWeight = ((phase == "night") ? 1.5 : 0);
 
         let actionToTake = Util.randomFromWeight(
             [["move", moveWeight],
@@ -211,6 +211,17 @@ class Tribute {
             }
         }
 
+        if (this.hasItemOfType("weapon-stab"))
+        {
+            thisWinWeight += 7;
+            this.weapon = this.inventory["weapon-stab"][0];
+            if (opponent.hasItemOfType("weapon-stab"))
+            {
+                opponentWinWeight += 7;
+                opponent.weapon = opponent.inventory["weapon-stab"][0];
+            }
+        }
+
         if (this.hasItemOfType("weapon-shoot"))
         {
             thisWinWeight += 10;
@@ -219,6 +230,17 @@ class Tribute {
             {
                 opponentWinWeight += 10;
                 opponent.weapon = opponent.inventory["weapon-slash"][0];
+            }
+        }
+
+        if (this.hasItemOfType("weapon-short"))
+        {
+            thisWinWeight += 1;
+            this.weapon = this.inventory["weapon-short"][0];
+            if (opponent.hasItemOfType("weapon-short"))
+            {
+                opponentWinWeight += 1;
+                opponent.weapon = opponent.inventory["weapon-short"][0];
             }
         }
 
@@ -281,23 +303,6 @@ class Tribute {
                 ||  this.hasItemOfType("weapon-stab")
                 ||  this.hasItemOfType("weapon-short")
                 ||  this.hasItemOfType("weapon-slash");
-    }
-
-    static getRandomName()
-    {
-        // const FIRST = ["Ardis", "Java", "Jeff", "Mango", "Pango", "Ximing", "Vijiyalakshmi", "Zordon"];
-        // const LAST = ["Poder", "Hodunk", "Wu", "Obama", "Wendy's", "Pango", "Mango", "Uwubert", "Telegram", "Xena", "Wobo", "Kork", "Metalhead", "Gaysex"];
-        // const randFirst = FIRST[Math.floor(Math.random() * FIRST.length)];
-        // const randLast = LAST[Math.floor(Math.random() * LAST.length)];
-        // return randFirst + " " + randLast;
-
-        const names = ["Charizard", "Liam", "Isaac", "Mr. Clean", "Grovyle", "Kass", "Sherb", 
-                        "Mudkip", "Godzilla", "Amicus", "Teba", "Jeffery Brannon", "Hugo",
-                        "Peanut", "Obama", "Raymond", "Fox", "Wolf", "Leroy", "Luke", "Elias",
-                        "Caleb", "Mat", "Bushfries", "Xi Xiping", "Alphys", "Ralsei", "Asriel",
-                        "Toby Fox", "Sans"];
-
-        return names[Util.randInt(0, names.length - 1)];
     }
 }
 

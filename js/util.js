@@ -71,7 +71,47 @@ class Util {
         const char1 = colors[Util.randInt(0, colors.length - 1)];
         const char2 = colors[Util.randInt(0, colors.length - 1)];
         const char3 = colors[Util.randInt(0, colors.length - 1)];
-        return "#" + char1 + char2 + char3;
+        return "#" + char1 + char1 + char2 + char2 + char3 + char3;
+    }
+
+    static getRandomName()
+    {
+
+        const firstNames = ["Lucas", "Liam", "William", "Elias", "Noah", "Hugo", "Oliver", 
+        "Oscar", "Adam", "Matteo", "Walter", "Alexander", "Leo", "Nils", "Alfred", "Ludvig", 
+        "Adrian", "Theo", "Leon", "Elliot", "Arvid", "Vincent", "Theodor", "Filip", "Axel", 
+        "Harry", "Frans", "Charlie", "Mohamed", "Gabriel", "Isak", "August", "Loui", "Benjamin", 
+        "Sam", "Josef", "Ebbe", "Melvin", "Love", "Olle", "Albin", "Henry", "Edvin", "Elton", "Emil", 
+        "Malte", "Vidar", "Gustav", "Jack", "Frank", "Viggo", "Noel", "Sixten", "Viktor", "Melker", 
+        "Jacob", "Casper", "Erik", "Tage", "Aron", "Loke", "Otto", "Wilmer", "Colin", "Milo", "Sigge", 
+        "Alvin", "Carl", "Milton", "Wilhelm", "Anton", "Ivar", "Kian", "Julian", "Max", "Elis", "Levi", 
+        "Nicholas", "Elvin", "Felix", "Vilgot", "Ali", "Omar", "Hjalmar", "Ture", "Samuel", "David", 
+        "Kevin", "Joel", "Vide", "Amir", "Ville", "Dante", "John", "Daniel", "Algot", "Folke", "Alve", 
+        "Ibrahim", "Thor", "Elsa", "Alice", "Maja", "Agnes", "Lilly", "Olivia", "Julia", "Ebba",
+        "Linnea", "Molly", "Ella", "Wilma", "Klara", "Stella", "Freja", "Alicia", "Alva", "Alma", 
+        "Isabelle", "Ellen", "Saga", "Ellie", "Astrid", "Emma", "Nellie", "Emilia", "Vera", "Signe",
+        "Elvira", "Nova", "Selma", "Ester", "Leah", "Felicia", "Sara", "Sofia", "Elise", "Ines",
+        "Tyra", "Amanda", "Elin", "Ida", "Moa", "Meja", "Isabella", "Tuva", "Nora", "Siri", "Matilda", 
+        "Sigrid", "Edith", "Lovisa", "Juni", "Liv", "Lova", "Hanna", "Tilde", "Iris", "Thea", "Emelie",
+        "Melissa", "Cornelia", "Leia", "Ingrid", "Livia", "Jasmine", "Nathalie", "Greta", "Stina",
+        "Joline", "Filippa", "Emmy", "Svea", "Märta", "Tilda", "Hilda", "Majken", "Celine",
+        "Ellinor", "Lykke", "Novalie", "Linn", "Tindra", "My", "Mira", "Rut", "Ronja", "Hilma",
+        "Lisa", "Maria", "Elina", "Lovis", "Minna", "Hedda", "Amelia", "Sally", "Nicole",
+        "Victoria", "Luna", "Anna", "Elisa"];
+
+        const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 
+        'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 
+        'Thomas', 'Taylor', 'Moore', 'Jackson', 'Martin', 'Lee', 'Perez', 'Thompson', 'White', 
+        'Harris', 'Sanchez', 'Clark', 'Ramirez', 'Lewis', 'Robinson', 'Walker', 'Young', 'Allen', 
+        'King', 'Wright', 'Scott', 'Torres', 'Nguyen', 'Hill', 'Flores', 'Green', 'Adams', 'Nelson',
+         'Baker', 'Hall', 'Rivera', 'Campbell', 'Mitchell', 'Carter', 'Roberts', 'Gomez', 'Phillips', 
+         'Evans', 'Turner', 'Diaz', 'Parker', 'Cruz', 'Edwards', 'Collins', 'Reyes', 'Stewart',
+          'Morris', 'Morales', 'Murphy', 'Cook', 'Rogers', 'Gutierrez', 'Ortiz', 'Morgan', 'Cooper',
+           'Peterson', 'Bailey', 'Reed', 'Kelly', 'Howard', 'Ramos', 'Kim', 'Cox', 'Ward', 'Richardson',
+            'Watson', 'Brooks', 'Chavez', 'Wood', 'James', 'Bennett', 'Gray', 'Mendoza', 'Ruiz',
+             'Hughes', 'Price', 'Alvarez', 'Castillo', 'Sanders', 'Patel', 'Myers', 'Long'];
+
+        return firstNames[Util.randInt(0, firstNames.length - 1)] + " " + lastNames[Util.randInt(0, lastNames.length - 1)];
     }
 }
 

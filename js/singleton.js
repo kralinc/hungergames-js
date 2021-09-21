@@ -39,6 +39,7 @@ class Singleton {
         }
         else
         {
+
             const action = this.tributes[this.currentTribute].act(this.phase);
             $("#printout").prepend(`<p style='color:${this.tributes[this.currentTribute].color}'>${action}</p>`);
             this.#processDeaths(this.deadQueue);
@@ -46,6 +47,7 @@ class Singleton {
 
             if (this.currentTribute == 0)
             {
+                $("#printout").prepend(`</br><p>==== ${this.phase} ${this.day} ====</p></br>`);
                 if (this.phase == "night")
                 {
                     this.day++;
@@ -53,7 +55,6 @@ class Singleton {
                 }else {
                     this.phase = "night";
                 }
-                $("#printout").prepend(`</br><p>${this.phase} ${this.day}</p></br>`)
             }
         }
     }

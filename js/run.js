@@ -43,10 +43,12 @@ function createDistricts(num)
                                         <div class='container'>
                                             <div class='row'>
                                                 <div class='col-12'>
-                                                    <input id='t-name-1-${i}' type='text' value='${Tribute.getRandomName()}'>
+                                                    <input id='t-name-1-${i}' type='text' value='${Util.getRandomName()}'>
+                                                    <input id='t-color-1-${i}' type='color' value='${Util.randomWebSafeColor()}'>
                                                 </div>
                                                 <div class='col-12'>
-                                                    <input id='t-name-2-${i}' type='text' value='${Tribute.getRandomName()}'>
+                                                    <input id='t-name-2-${i}' type='text' value='${Util.getRandomName()}'>
+                                                    <input id='t-color-2-${i}' type='color' value='${Util.randomWebSafeColor()}'>
                                                 </div>
                                             </div>
                                         </div>
@@ -79,9 +81,11 @@ function compileTributes()
     {
         const districtName = $("#d-name-" + i).val();
         const trib1Name = $("#t-name-1-" + i).val();
+        const trib1Color = $("#t-color-1-" + i).val();
         const trib2Name = $("#t-name-2-" + i).val();
+        const trib2Color = $("#t-color-2-" + i).val();
 
-        tributes.push(new Tribute(i * 2, trib1Name, districtName, Util.randomWebSafeColor(), "warm", SINGLETON.map, SINGLETON));
+        tributes.push(new Tribute(i * 2, trib1Name, districtName, trib1Color, "warm", SINGLETON.map, SINGLETON));
         let lastTribute = tributes[tributes.length - 1];
         $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
         .append(`<div 
@@ -91,7 +95,7 @@ function compileTributes()
                     data-bs-toggle='tooltip' data-bs-placement='top' 
                     title='${lastTribute.name}, ${lastTribute.district}'>`);
 
-        tributes.push(new Tribute(i * 2 + 1, trib2Name, districtName, Util.randomWebSafeColor(), "warm", SINGLETON.map, SINGLETON));
+        tributes.push(new Tribute(i * 2 + 1, trib2Name, districtName, trib2Color, "warm", SINGLETON.map, SINGLETON));
         lastTribute = tributes[tributes.length - 1];
         $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
         .append(`<div 
