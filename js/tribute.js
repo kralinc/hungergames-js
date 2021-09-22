@@ -49,13 +49,24 @@ class Tribute {
             return `${this.name} died of thirst.`;
         }
 
+        //Moving is the default action
+        //It is more likely to happen if they foraged and found nothing
+        //    (not including at night, to not conflict with sleep)
         let moveWeight = 1 * ((this.previouslyFoundNothing && phase != "night") ? 3 : 1);
+
+        //Recovering stats gets exponentially more likely the less of that stat they have
         let foodWeight = 1 * (10/(this.hunger - 5));
         let waterWeight = 1 * (10/(this.thirst - 5));
+        let medicineWeight = 1 * (10 / this.health);
+
+        //Try desparately to get a weapon if unarmed
         let weaponWeight = 1.5 * (this.hasWeapon() ? 0.1 : 1);
+
+
         let fightWeight = 1 * (this.health / 100) //less likely to fight if injured
                             * ((this.getTile().tributes.length > 1) ? 1 : 0) //won't fight if there isn't anyone to fight
-                            * ((this.hasWeapon()) ? 1 : 0.4); //much less likely to fight if unarmed
+                            * ((this.hasWeapon()) ? 1 : 0.4) //much less likely to fight if unarmed
+                            * ((this.singleton.tributes.length <= 5) ? 3 : 1); //more likely to fight if one of the last 5
         let sleepWeight = ((phase == "night") ? 1.5 : 0);
 
         let actionToTake = Util.randomFromWeight(
@@ -63,6 +74,7 @@ class Tribute {
             ["getfood", foodWeight],
             ["getWater", waterWeight],
             ["getWeapon", weaponWeight],
+            ["getMedicine", medicineWeight],
             ["fight", fightWeight],
             ["sleep", sleepWeight]]
         );
@@ -91,6 +103,10 @@ class Tribute {
         else if (actionToTake == "getWeapon")
         {
             actionTaken = this.#forage("weapon");
+        }
+        else if (actionToTake == "getMedicine")
+        {
+            actionTaken = this.#getMedicine();
         }
         else if (actionToTake == "fight")
         {
@@ -153,6 +169,18 @@ class Tribute {
             return `${this.name} drank ${eaten.name} from their inventory.`;
         }else {
             return this.#forage("water");
+        }
+    }
+
+    #getMedicine()
+    {
+        if (this.hasItemOfType("medicine"))
+        {
+            let taken = this.inventory.medicine.pop();
+            this.health += taken.strength;
+            return `${this.name} took ${taken.name} from their inventory.`;
+        }else {
+            return this.#forage("medicine");
         }
     }
 

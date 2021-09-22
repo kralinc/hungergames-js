@@ -58,11 +58,11 @@ class ItemUtil {
             {name: 'monster energy', strength: 1.8},
         ],
         'medicine': [
-            {name: 'morphine', strength: 1},
-            {name: 'fentanyl', strength: 1},
-            {name: 'bacitracin', strength: 1},
-            {name: 'ibuprofen', strength: 1},
-            {name: 'penecillin', strength: 1},
+            {name: 'morphine', strength: 20},
+            {name: 'fentanyl', strength: 35},
+            {name: 'bacitracin', strength: 15},
+            {name: 'ibuprofen', strength: 10},
+            {name: 'penecillin', strength: 20},
         ],
         'weapon': [
             {name: 'flint spear', strength: 4},
