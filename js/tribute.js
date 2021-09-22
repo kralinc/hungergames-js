@@ -1,9 +1,10 @@
 import {Pos, Util} from "./util.js";
 
-const DEFAULT_FOOD_STRENGTH = 20;
+const DEFAULT_FOOD_STRENGTH = 35;
 const HUNGER_DEPLETION = 2;
 const THIRST_DEPLETION = 3;
 const FORAGE_FIND_NOTHING_CHANCE = 0.1;
+const MOVE_TRAP_CHANCE = 0.1;
 const SLEEP_HEALTH_REGEN = 5;
 
 class Tribute {
@@ -34,7 +35,6 @@ class Tribute {
 
     act(phase)
     {
-
         this.sleeping = false;
 
         if (this.hunger <= 0)
@@ -124,7 +124,12 @@ class Tribute {
         $(`#trib-${this.id}`).remove();
         $(`#tile-${this.position.x}-${this.position.y}`).append(mapItem);
 
-        return `${this.name} moved from ${this.position.x - moveX},${this.position.y-moveY} to ${this.position.x},${this.position.y}`;
+        if (Math.random() < MOVE_TRAP_CHANCE)
+        {
+            return this.#trap();
+        }else {
+            return `${this.name} moved from ${this.position.x - moveX},${this.position.y-moveY} to ${this.position.x},${this.position.y}`;
+        }
     }
 
     #getFood()
@@ -190,8 +195,8 @@ class Tribute {
     #fight(phase)
     {
         const opponent = this.targetRandomTributeInTile();
-        let thisWinWeight = 1 + this.#drawWeapon(this);
-        let opponentWinWeight = 1 + this.#drawWeapon(opponent);
+        let thisWinWeight = this.#drawWeapon(this);
+        let opponentWinWeight = this.#drawWeapon(opponent);
 
         if (phase == "night" && opponent.sleeping)
         {
@@ -248,27 +253,12 @@ class Tribute {
     #drawWeapon(tribute)
     {
         tribute.weapon = null;
-        let weaponWeight = 0;
+        let weaponWeight = 1;
 
-        if (tribute.hasItemOfType("weapon-shoot"))
+        if (tribute.hasItemOfType("weapon"))
         {
-            tribute.weapon = tribute.inventory["weapon-shoot"][0];
-            weaponWeight = 6 * tribute.weapon.strength;
-        }
-        else if (tribute.hasItemOfType("weapon-slash"))
-        {
-            tribute.weapon = tribute.inventory["weapon-slash"][0];
-            weaponWeight = 4 * tribute.weapon.strength;
-        }
-        else if (tribute.hasItemOfType("weapon-stab"))
-        {
-            tribute.weapon = tribute.inventory["weapon-stab"][0];
-            weaponWeight = 4 * tribute.weapon.strength;
-        }
-        else if (tribute.hasItemOfType("weapon-short"))
-        {
-            tribute.weapon = tribute.inventory["weapon-short"][0];
-            weaponWeight = 2 * tribute.weapon.strength;
+            tribute.weapon = tribute.inventory["weapon"][0];
+            weaponWeight += 1 * tribute.weapon.strength;
         }
 
         return weaponWeight;
@@ -281,6 +271,38 @@ class Tribute {
         return `${this.name} rests for the night.`;
     }
 
+    #trap()
+    {
+        const TRAPS = [
+            {name: "a bear trap", strength: 20},
+            {name: "a poison dart trap", strength: 100},
+            {name: "a landmine", strength: 200},
+            {name: "floor spikes", strength: 100},
+        ];
+
+        const trap = TRAPS[Util.randInt(0, TRAPS.length - 1)];
+        const damage = Util.randInt(0, trap.strength);
+
+        if (damage == 0)
+        {
+            return `${this.name} dodged ${trap.name} at ${this.position.x},${this.position.y}.`;
+        }
+
+        this.health -= damage;
+
+        if (this.health <= 0)
+        {
+            this.singleton.putInDeathQueue(this);
+            return `${this.name} was killed by ${trap.name} at ${this.position.x},${this.position.y}!`;
+        }else if (this.health < 33)
+        {
+            return `${this.name} was seriously injured by ${trap.name} at ${this.position.x},${this.position.y}.`;
+        }
+        else {
+            return `${this.name} got caught in ${trap.name} at ${this.position.x},${this.position.y}.`;
+        }
+    }
+
     targetRandomTributeInTile()
     {
         const thisIndex = this.getTile().tributes.indexOf(this);
@@ -291,10 +313,7 @@ class Tribute {
 
     hasWeapon()
     {
-        return this.hasItemOfType("weapon-shoot")
-                ||  this.hasItemOfType("weapon-stab")
-                ||  this.hasItemOfType("weapon-short")
-                ||  this.hasItemOfType("weapon-slash");
+        return this.hasItemOfType("weapon");
     }
 }
 

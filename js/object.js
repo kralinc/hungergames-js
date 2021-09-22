@@ -16,19 +16,13 @@ class ItemUtil {
         const foodweight = 1.7;
         const waterweight = 1.3;
         const medicineweight = 0.1;
-        const stabweight = 0.3;
-        const slashweight = 0.1;
-        const shootweight = 0.2;
-        const shortWeight = 0.7;
+        const weaponWeight = 2;
 
         const itemType = Util.randomFromWeight([
             ["food", foodweight],
             ["water", waterweight],
             ["medicine", medicineweight],
-            ["weapon-stab", stabweight],
-            ["weapon-slash", slashweight],
-            ["weapon-shoot", shootweight],
-            ["weapon-short", shortWeight]
+            ["weapon", weaponWeight],
         ]);
 
         const itemSpec = this.getRandomWithinType(itemType);
@@ -70,28 +64,22 @@ class ItemUtil {
             {name: 'ibuprofen', strength: 1},
             {name: 'penecillin', strength: 1},
         ],
-        'weapon-stab': [
-            {name: 'flint spear', strength: 1},
-            {name: 'gold spear', strength: 1},
-            {name: 'shiv on a stick', strength: 0.66},
-            {name: 'trident', strength: 2},
-            {name: 'pike', strength: 1.4},
-        ],
-        'weapon-slash': [
-            {name: 'gladius', strength: 1},
-            {name: 'broadsword', strength: 1},
-            {name: 'katana', strength: 1.5},
-            {name: 'longsword', strength: 1.5},
-            {name: 'sabre', strength: 1.1},
-        ],
-        'weapon-shoot': [
-            {name: 'a crossbow', strength: 1.1},
-            {name: 'a bow', strength: 1.1},
-            {name: 'a compound bow', strength: 1.1},
-        ],
-        'weapon-short': [
+        'weapon': [
+            {name: 'flint spear', strength: 4},
+            {name: 'gold spear', strength: 4.2},
+            {name: 'shiv on a stick', strength: 1.9},
+            {name: 'trident', strength: 5},
+            {name: 'pike', strength: 4},
+            {name: 'gladius', strength: 2.7},
+            {name: 'a broadsword', strength: 3},
+            {name: 'a katana', strength: 3.25},
+            {name: 'a longsword', strength: 3},
+            {name: 'a sabre', strength: 2.66},
+            {name: 'a crossbow', strength: 6},
+            {name: 'a bow', strength: 5.5},
+            {name: 'a compound bow', strength: 6.25},
             {name: 'a shiv', strength: 0.8},
-            {name: 'a hunting knife', strength: 1.5},
+            {name: 'a hunting knife', strength: 1.25},
             {name: 'a steak knife', strength: 0.5},
             {name: 'a dagger', strength: 1},
         ]
