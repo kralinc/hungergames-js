@@ -19,6 +19,7 @@ class Tribute {
         this.health = 100;
         this.hunger = 100;
         this.thirst = 100;
+        this.kills = [];
         this.debuffs = [];
         this.inventory = {
         }
@@ -35,18 +36,24 @@ class Tribute {
 
     act(phase)
     {
+        let r = new Object();
         this.sleeping = false;
+        r.boring = false;
 
         if (this.hunger <= 0)
         {
             this.singleton.putInDeathQueue(this);
-            return `${this.name} died of hunger.`;
+            r.action = `${this.name} died of hunger.`;
+            r.causeOfDeath = "Died of hunger.";
+            return r;
         }
 
         if (this.thirst <= 0)
         {
             this.singleton.putInDeathQueue(this);
-            return `${this.name} died of thirst.`;
+            r.action = `${this.name} died of thirst.`;
+            r.causeOfDeath = "Died of thirst.";
+            return r;
         }
 
         //Moving is the default action
@@ -115,18 +122,20 @@ class Tribute {
         else if (actionToTake == "sleep")
         {
             actionTaken = this.#sleep();
+            r.boring = true;
         }
         else {
-            actionTaken = this.#move();
+            actionTaken = this.#move(r);
         }
 
         this.hunger -= HUNGER_DEPLETION;
         this.thirst -= THIRST_DEPLETION;
 
-        return actionTaken;
+        r.action = actionTaken;
+        return r;
     }
 
-    #move()
+    #move(r)
     {
         this.previouslyFoundNothing = false;
         this.getTile().tributes.splice(this.getTile().tributes.indexOf(this), 1);
@@ -144,6 +153,7 @@ class Tribute {
         {
             return this.#trap();
         }else {
+            r.boring = true;
             return `${this.name} moved from ${this.position.x - moveX},${this.position.y-moveY} to ${this.position.x},${this.position.y}`;
         }
     }

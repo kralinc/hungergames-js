@@ -40,9 +40,12 @@ class Singleton {
         else
         {
 
-            const action = this.tributes[this.currentTribute].act(this.phase);
-            $("#printout").prepend(`<p style='color:${this.tributes[this.currentTribute].color}'>${action}</p>`);
-            this.#processDeaths(this.deadQueue);
+            const response = this.tributes[this.currentTribute].act(this.phase);
+            let boring = (response.boring) ? "boring" : "";
+            const boringChecked = $("#boring-check").prop("checked");
+            let hidden = (boringChecked && response.boring) ? "hidden" : "";
+            $("#printout").prepend(`<p class='${boring} ${hidden}' style='color:${this.tributes[this.currentTribute].color}'>${response.action}</p>`);
+            this.#processDeaths(this.deadQueue, response);
             this.currentTribute = (this.currentTribute >= this.tributes.length - 1) ? 0 : this.currentTribute + 1;
 
             if (this.currentTribute == 0)
@@ -64,7 +67,7 @@ class Singleton {
         this.deadQueue.push(tribute);
     }
 
-    #processDeaths(deadTributes)
+    #processDeaths(deadTributes, response)
     {
         if (this.deadQueue.length <= 0)
         {
@@ -81,7 +84,7 @@ class Singleton {
             dead.getTile().tributes.splice(dead.getTile().tributes.indexOf(dead), 1);
 
             this.deadTributes.push(dead);
-            $("#stats").prepend(`<p>${dead.name}: ${dead.district}</p>`);
+            $(`#trib-avatar-${dead.id}`).css("background-image", "url(http://cdn.onlinewebfonts.com/svg/img_493013.png)");
 
             if (this.currentTribute <= deadIndex && this.currentTribute != 0)
             {

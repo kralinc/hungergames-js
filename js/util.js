@@ -8,7 +8,9 @@ class Util {
 
     constructor(){}
 
-    //param: weights - 2D Array
+    /**
+     * @param: weights - 2D Array [value, weight]
+    */
     static randomFromWeight(weights)
     {
         let sum = 0;

@@ -85,8 +85,34 @@ function compileTributes()
         const trib2Name = $("#t-name-2-" + i).val();
         const trib2Color = $("#t-color-2-" + i).val();
 
+        $("#stats").append(`<div id='stats-row-${i}'class='row'>
+        <div class='col-12 h3'>${districtName}</div>
+        </div>`);
+
         tributes.push(new Tribute(i * 2, trib1Name, districtName, trib1Color, "warm", SINGLETON.map, SINGLETON));
         let lastTribute = tributes[tributes.length - 1];
+        //create tribute 1 piece on board
+        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
+        .append(`<div 
+                    id='trib-${lastTribute.id}'
+                    class='tribute' 
+                    style='background-color: ${lastTribute.color}'
+                    data-bs-toggle='tooltip' data-bs-placement='top' 
+                    title='${lastTribute.name}, ${lastTribute.district}'>`);
+        
+        $(`#stats-row-${i}`).append(`
+            <div class='col-6'>
+                <div id='trib-avatar-${lastTribute.id}' class='avatar'>
+                    <div class='layer' style='background-color: ${lastTribute.color}'></div>
+                </div>
+                <p>${lastTribute.name}</p>
+            </div>
+        `);
+
+
+        tributes.push(new Tribute(i * 2 + 1, trib2Name, districtName, trib2Color, "warm", SINGLETON.map, SINGLETON));
+        lastTribute = tributes[tributes.length - 1];
+        //Create tribute 2 piece on board
         $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
         .append(`<div 
                     id='trib-${lastTribute.id}'
@@ -95,15 +121,14 @@ function compileTributes()
                     data-bs-toggle='tooltip' data-bs-placement='top' 
                     title='${lastTribute.name}, ${lastTribute.district}'>`);
 
-        tributes.push(new Tribute(i * 2 + 1, trib2Name, districtName, trib2Color, "warm", SINGLETON.map, SINGLETON));
-        lastTribute = tributes[tributes.length - 1];
-        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
-        .append(`<div 
-                    id='trib-${lastTribute.id}'
-                    class='tribute' 
-                    style='background-color: ${lastTribute.color}'
-                    data-bs-toggle='tooltip' data-bs-placement='top' 
-                    title='${lastTribute.name}, ${lastTribute.district}'>`);
+        $(`#stats-row-${i}`).append(`
+        <div class='col-6'>
+            <div id='trib-avatar-${lastTribute.id}' class='avatar'>
+                <div class='layer' style='background-color: ${lastTribute.color}'></div>
+            </div>
+            <p>${lastTribute.name}</p>
+        </div>
+        `);
     }
 
     return tributes;
@@ -155,4 +180,13 @@ $("#skip").on('click', () => {
 $("#num-districts").on('change', (e) => {
     console.log(e.target.value);
     createDistricts(parseInt(e.target.value));
+});
+
+$("#boring-check").on('change', (e) => {
+    if (e.target.checked)
+    {
+        $(".boring").addClass("hidden");
+    }else {
+        $(".boring").removeClass("hidden");
+    }
 });
