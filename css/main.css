@@ -40,9 +40,9 @@
 
 .avatar {
     background:url('../avatar.png');
-    background-size: 100px;
-    width: 100px;
-    height: 100px;
+    background-size: 80px;
+    width: 80px;
+    height: 80px;
 }
 
 .layer {

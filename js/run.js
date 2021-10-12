@@ -85,9 +85,13 @@ function compileTributes()
         const trib2Name = $("#t-name-2-" + i).val();
         const trib2Color = $("#t-color-2-" + i).val();
 
-        $("#stats").append(`<div id='stats-row-${i}'class='row'>
-        <div class='col-12 h3'>${districtName}</div>
-        </div>`);
+        $("#stats").append(`
+                            <div class='col-12 col-lg-6'>
+                                <div id='stats-row-${i}'class='row'>
+                                    <div class='col-12 h3'>${districtName}</div>
+                                </div>
+                            </div>
+        `);
 
         tributes.push(new Tribute(i * 2, trib1Name, districtName, trib1Color, "warm", SINGLETON.map, SINGLETON));
         let lastTribute = tributes[tributes.length - 1];
