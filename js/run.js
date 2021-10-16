@@ -160,6 +160,7 @@ function putStatsInModal(t) {
     const allTributes = [...SINGLETON.tributes].concat(SINGLETON.deadTributes);
     const tribute = SINGLETON.findTributeById(tributeId, allTributes);
     $("#statsModalTitle").html(`${tribute.name} (${tribute.district})`);
+    $("#statsModalVitals").html(`Health: ${tribute.health}<br>Hunger: ${tribute.hunger.toFixed(2)}<br>Thirst: ${tribute.thirst.toFixed(2)}`);
     $("#statsModalDaysSurvived").html(`Days survived: ${tribute.daysSurvived}`);
     $("#statsModalImg").html(t.outerHTML);
     $("#statsModalLocation").html("Location: " + tribute.position.x + ", " + tribute.position.y);

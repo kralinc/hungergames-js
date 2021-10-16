@@ -1,8 +1,8 @@
 import {Pos, Util} from "./util.js";
 
 const DEFAULT_FOOD_STRENGTH = 35;
-const HUNGER_DEPLETION = 2;
-const THIRST_DEPLETION = 3;
+const HUNGER_DEPLETION = 1.85;
+const THIRST_DEPLETION = 2;
 const FORAGE_FIND_NOTHING_CHANCE = 0.1;
 const MOVE_TRAP_CHANCE = 0.1;
 const SLEEP_HEALTH_REGEN = 5;
@@ -229,6 +229,16 @@ class Tribute {
             this.inventory[item.type] = [];
         }
 
+        if (item.type == "weapon")
+        {
+            if ((this.inventory["weapon"][0] && this.inventory["weapon"][0].strength < item.strength)
+            || !this.inventory["weapon"][0])
+            {
+                this.inventory["weapon"][0] = item;
+                return;
+            }
+        }
+
         this.inventory[item.type].push(item);
     }
 
@@ -322,6 +332,8 @@ class Tribute {
             {name: "a poison dart trap", strength: 100},
             {name: "a landmine", strength: 200},
             {name: "floor spikes", strength: 100},
+            {name: "a flamethrower", strength: 80},
+            {name: "a pitfall", strength: 50},
         ];
 
         const trap = TRAPS[Util.randInt(0, TRAPS.length - 1)];

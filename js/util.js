@@ -84,7 +84,7 @@ class Util {
         "Adrian", "Theo", "Leon", "Elliot", "Arvid", "Vincent", "Theodor", "Filip", "Axel", 
         "Harry", "Frans", "Charlie", "Mohamed", "Gabriel", "Isak", "August", "Loui", "Benjamin", 
         "Sam", "Josef", "Ebbe", "Melvin", "Love", "Olle", "Albin", "Henry", "Edvin", "Elton", "Emil", 
-        "Malte", "Vidar", "Gustav", "Jack", "Frank", "Viggo", "Noel", "Sixten", "Viktor", "Melker", 
+        "Malte", "Vidar", "Gustav", "Jack", "Frank", "Viggo", "Noelle", "Sixten", "Viktor", "Melker", 
         "Jacob", "Casper", "Erik", "Tage", "Aron", "Loke", "Otto", "Wilmer", "Colin", "Milo", "Sigge", 
         "Alvin", "Carl", "Milton", "Wilhelm", "Anton", "Ivar", "Kian", "Julian", "Max", "Elis", "Levi", 
         "Nicholas", "Elvin", "Felix", "Vilgot", "Ali", "Omar", "Hjalmar", "Ture", "Samuel", "David", 
@@ -99,7 +99,7 @@ class Util {
         "Joline", "Filippa", "Emmy", "Svea", "Märta", "Tilda", "Hilda", "Majken", "Celine",
         "Ellinor", "Lykke", "Novalie", "Linn", "Tindra", "My", "Mira", "Rut", "Ronja", "Hilma",
         "Lisa", "Maria", "Elina", "Lovis", "Minna", "Hedda", "Amelia", "Sally", "Nicole",
-        "Victoria", "Luna", "Anna", "Elisa"];
+        "Victoria", "Luna", "Anna", "Elisa", "Kris", "Susie"];
 
         const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 
         'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 
