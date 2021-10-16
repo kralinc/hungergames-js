@@ -85,14 +85,18 @@ function compileTributes()
         const trib2Name = $("#t-name-2-" + i).val();
         const trib2Color = $("#t-color-2-" + i).val();
 
-        $("#stats").append(`<div id='stats-row-${i}'class='row'>
-        <div class='col-12 h3'>${districtName}</div>
-        </div>`);
+        $("#stats").append(`
+                            <div class='col-12 col-lg-6'>
+                                <div id='stats-row-${i}'class='row'>
+                                    <div class='col-12 h3'>${districtName}</div>
+                                </div>
+                            </div>
+        `);
 
         tributes.push(new Tribute(i * 2, trib1Name, districtName, trib1Color, "warm", SINGLETON.map, SINGLETON));
         let lastTribute = tributes[tributes.length - 1];
         //create tribute 1 piece on board
-        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
+        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}-content`)
         .append(`<div 
                     id='trib-${lastTribute.id}'
                     class='tribute' 
@@ -113,7 +117,7 @@ function compileTributes()
         tributes.push(new Tribute(i * 2 + 1, trib2Name, districtName, trib2Color, "warm", SINGLETON.map, SINGLETON));
         lastTribute = tributes[tributes.length - 1];
         //Create tribute 2 piece on board
-        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
+        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}-content`)
         .append(`<div 
                     id='trib-${lastTribute.id}'
                     class='tribute' 
@@ -136,19 +140,37 @@ function compileTributes()
 
 function createMap()
 {
+    // for (let i = 0; i < SINGLETON.map.size; i++)
+    // {
+    //     $("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
+    //     for (let j = 0; j < SINGLETON.map.size; j++)
+    //     {
+    //         $(`#map-row-${i}`).append(`<div id='tile-${j}-${i}' class='tile'></div>`)
+    //     }
+    // }
     for (let i = 0; i < SINGLETON.map.size; i++)
     {
-        $("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
         for (let j = 0; j < SINGLETON.map.size; j++)
         {
-            $(`#map-row-${i}`).append(`<div id='tile-${j}-${i}' class='tile'></div>`)
+            //$("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
+            $(`#map-container`).append(`<div id='tile-${j}-${i}' class='tile'></div>`);
+            $(`#tile-${j}-${i}`).append(`<div id='tile-${j}-${i}-content' class='tile-content'></div>`);
         }
     }
-    // for (let i = 0; i < SINGLETON.map.size * SINGLETON.map.size; i++)
-    // {
-    //     const newRow = `<div class='tile'></div>`
-    //     $("#map-container").append(newRow);
-    // }
+}
+
+function putStatsInModal(id) {
+    const tributeId = parseInt(id.split("-")[2]);
+    const allTributes = [...SINGLETON.tributes].concat(SINGLETON.deadTributes);
+    const tribute = SINGLETON.findTributeById(tributeId, allTributes);
+    $("#statsModalTitle").html(`${tribute.name} (${tribute.district})`);
+    $("#statsModalVitals").html(`Health: ${tribute.health}<br>Hunger: ${tribute.hunger.toFixed(2)}<br>Thirst: ${tribute.thirst.toFixed(2)}`);
+    $("#statsModalDaysSurvived").html(`Days survived: ${tribute.daysSurvived}`);
+    $("#statsModalImg").html($(`#trib-avatar-${tributeId}`)[0].outerHTML);
+    $("#statsModalLocation").html("Location: " + tribute.position.x + ", " + tribute.position.y);
+    $("#statsModalKills").html(`Kills: ${tribute.kills.length} - ${tribute.kills}`);
+    $("#statsModalCauseOfDeath").html(`Cause of death: ${tribute.causeOfDeath}`);
+    $("#statsModalInventory").html(`Inventory: ${JSON.stringify(tribute.inventory)}`);
 }
 
 function step()
@@ -189,4 +211,26 @@ $("#boring-check").on('change', (e) => {
     }else {
         $(".boring").removeClass("hidden");
     }
+});
+
+$("#stats").on('click', (e) => {
+    const t = e.target;
+    if (t.classList.contains("layer"))
+    {
+        putStatsInModal(t.parentNode.id);
+        $("#statsModal").modal('show');
+    }
+});
+
+$("#printout").on('click', (e) => {
+    if (e.target.classList.contains("opens-stats"))
+    {
+        const id = e.target.classList[1];
+        putStatsInModal(id);
+        $("#statsModal").modal('show');
+    }
+});
+
+$("button[data-dismiss='modal']").on('click', () => {
+    $("#statsModal").modal('hide');
 });

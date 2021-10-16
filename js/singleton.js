@@ -2,6 +2,10 @@ import Map from './map.js';
 
 const EVENT_CHANCE = 0.06;
 
+/*
+    TODO: Land features that change what actions are possible in the area, as well as changing the graphics of the tile
+*/
+
 class Singleton {
     constructor(mapSize)
     {
@@ -45,7 +49,7 @@ class Singleton {
             const boringChecked = $("#boring-check").prop("checked");
             let hidden = (boringChecked && response.boring) ? "hidden" : "";
             $("#printout").prepend(`<p class='${boring} ${hidden}' style='color:${this.tributes[this.currentTribute].color}'>${response.action}</p>`);
-            this.#processDeaths(this.deadQueue, response);
+            this.#processDeaths(this.deadQueue);
             this.currentTribute = (this.currentTribute >= this.tributes.length - 1) ? 0 : this.currentTribute + 1;
 
             if (this.currentTribute == 0)
@@ -55,7 +59,9 @@ class Singleton {
                 {
                     this.day++;
                     this.phase = "day";
-                }else {
+                }
+                else
+                {
                     this.phase = "night";
                 }
             }
@@ -67,7 +73,7 @@ class Singleton {
         this.deadQueue.push(tribute);
     }
 
-    #processDeaths(deadTributes, response)
+    #processDeaths(deadTributes)
     {
         if (this.deadQueue.length <= 0)
         {
@@ -92,6 +98,19 @@ class Singleton {
             }
         }
         this.deadQueue = [];
+    }
+
+    findTributeById(id, array)
+    {
+        for (let tribute of array)
+        {
+            if (tribute.id == id)
+            {
+                return tribute;
+            }
+        }
+
+        return null;
     }
 }
 

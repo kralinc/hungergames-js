@@ -1,3 +1,24 @@
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/\$\{p(\d)\}/g, function(match, id) {
+        return args[id];
+    });
+};
+
+const flavorTextSleep = [
+    "${p0} rests for the night.",
+    "${p0} make a bed from some leaves.",
+    "${p0} cries themself to sleep.",
+    "${p0} sleeps under the stars.",
+    "${p0} dreams about home.",
+    "${p0} curls up next to a bush.",
+    "${p0} tries to keep watch, but drifts off.",
+    "${p0} sleeps in a tree."
+];
+
+const flavorTexts = new Map();
+flavorTexts.set("sleep", flavorTextSleep);
+
 function Pos(x, y)
 {
     this.x = x;
@@ -84,7 +105,7 @@ class Util {
         "Adrian", "Theo", "Leon", "Elliot", "Arvid", "Vincent", "Theodor", "Filip", "Axel", 
         "Harry", "Frans", "Charlie", "Mohamed", "Gabriel", "Isak", "August", "Loui", "Benjamin", 
         "Sam", "Josef", "Ebbe", "Melvin", "Love", "Olle", "Albin", "Henry", "Edvin", "Elton", "Emil", 
-        "Malte", "Vidar", "Gustav", "Jack", "Frank", "Viggo", "Noel", "Sixten", "Viktor", "Melker", 
+        "Malte", "Vidar", "Gustav", "Jack", "Frank", "Viggo", "Noelle", "Sixten", "Viktor", "Melker", 
         "Jacob", "Casper", "Erik", "Tage", "Aron", "Loke", "Otto", "Wilmer", "Colin", "Milo", "Sigge", 
         "Alvin", "Carl", "Milton", "Wilhelm", "Anton", "Ivar", "Kian", "Julian", "Max", "Elis", "Levi", 
         "Nicholas", "Elvin", "Felix", "Vilgot", "Ali", "Omar", "Hjalmar", "Ture", "Samuel", "David", 
@@ -99,7 +120,7 @@ class Util {
         "Joline", "Filippa", "Emmy", "Svea", "Märta", "Tilda", "Hilda", "Majken", "Celine",
         "Ellinor", "Lykke", "Novalie", "Linn", "Tindra", "My", "Mira", "Rut", "Ronja", "Hilma",
         "Lisa", "Maria", "Elina", "Lovis", "Minna", "Hedda", "Amelia", "Sally", "Nicole",
-        "Victoria", "Luna", "Anna", "Elisa"];
+        "Victoria", "Luna", "Anna", "Elisa", "Kris", "Susie"];
 
         const lastNames = ['Smith', 'Johnson', 'Williams', 'Brown', 'Jones', 'Garcia', 'Miller', 
         'Davis', 'Rodriguez', 'Martinez', 'Hernandez', 'Lopez', 'Gonzalez', 'Wilson', 'Anderson', 
@@ -115,6 +136,12 @@ class Util {
         'Kim', 'Nguyen', 'Lee', 'Park', 'Choi', 'Jung', 'Mohammed', 'Ahmed', 'Alfarsi'];
 
         return firstNames[Util.randInt(0, firstNames.length - 1)] + " " + lastNames[Util.randInt(0, lastNames.length - 1)];
+    }
+
+    static getFlavorText(type, p1, p2)
+    {
+        const texts = flavorTexts.get(type);
+        return texts[Util.randInt(0,texts.length - 1)].format(p1, p2);
     }
 }
 
