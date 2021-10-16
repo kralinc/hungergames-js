@@ -27,6 +27,7 @@
     overflow: auto; */
     position: relative;
     flex-basis: 25%;
+    overflow: auto;
 }
 
 .tile::before {
@@ -40,6 +41,10 @@
     top: 0; left: 0;
     height: 100%;
     width: 100%;
+}
+
+.open-stats {
+    cursor: pointer;
 }
 
 #printout, #stats {

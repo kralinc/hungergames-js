@@ -250,7 +250,7 @@ class Tribute {
         if (phase == "night" && opponent.sleeping)
         {
             // TODO implement
-            return `${this.name} watches ${opponent.name} while they sleep`;
+            return `${this.name} watches ${opponent.getNameHTML()} while they sleep`;
         }
         else
         {
@@ -276,12 +276,12 @@ class Tribute {
         let thisWeaponText = (this.weapon == null) ? " unarmed," : ` armed with ${this.weapon.name},`;
         let opponentWeaponText = (opponent.weapon == null) ? " unarmed." : ` armed with ${opponent.weapon.name}. `;
 
-        let output = `${this.name},${thisWeaponText} fought ${opponent.name},${opponentWeaponText} `;
+        let output = `${this.getNameHTML()},${thisWeaponText} fought ${opponent.getNameHTML()},${opponentWeaponText}`;
         if (opponent.health <= 0)
         {
             opponent.causeOfDeath = `Killed by ${this.name} (${this.district})`;
             this.singleton.putInDeathQueue(opponent);
-            output += `${opponent.name} died in battle. `;
+            output += `${opponent.getNameHTML()} died in battle.`;
             this.kills.push(`${opponent.name} (${opponent.district})`);
         }else if (opponent.health <= 15)
         {
@@ -293,7 +293,7 @@ class Tribute {
             this.causeOfDeath = `Killed by ${opponent.name} (${opponent.district})`;
             this.singleton.putInDeathQueue(this);
             opponent.kills.push(`${this.name} (${this.district})`);
-            output += `${this.name} died fighting.`;
+            output += `${this.getNameHTML()} died fighting.`;
         }
         else if (this.health <= 15)
         {
@@ -322,7 +322,7 @@ class Tribute {
     {
         this.sleeping = true;
         this.health += (this.health == 100) ? 0 : SLEEP_HEALTH_REGEN;
-        return `${this.name} rests for the night.`;
+        return Util.getFlavorText("sleep", this.name);
     }
 
     #trap()
@@ -371,6 +371,11 @@ class Tribute {
     hasWeapon()
     {
         return this.hasItemOfType("weapon");
+    }
+
+    getNameHTML()
+    {
+        return `<span class='opens-stats id-a-${this.id}' style='color: ${this.color}'>${this.name}</span>`
     }
 }
 

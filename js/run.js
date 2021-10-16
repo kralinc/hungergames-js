@@ -159,14 +159,14 @@ function createMap()
     }
 }
 
-function putStatsInModal(t) {
-    const tributeId = parseInt(t.id.split("-")[2]);
+function putStatsInModal(id) {
+    const tributeId = parseInt(id.split("-")[2]);
     const allTributes = [...SINGLETON.tributes].concat(SINGLETON.deadTributes);
     const tribute = SINGLETON.findTributeById(tributeId, allTributes);
     $("#statsModalTitle").html(`${tribute.name} (${tribute.district})`);
     $("#statsModalVitals").html(`Health: ${tribute.health}<br>Hunger: ${tribute.hunger.toFixed(2)}<br>Thirst: ${tribute.thirst.toFixed(2)}`);
     $("#statsModalDaysSurvived").html(`Days survived: ${tribute.daysSurvived}`);
-    $("#statsModalImg").html(t.outerHTML);
+    $("#statsModalImg").html($(`#trib-avatar-${tributeId}`)[0].outerHTML);
     $("#statsModalLocation").html("Location: " + tribute.position.x + ", " + tribute.position.y);
     $("#statsModalKills").html(`Kills: ${tribute.kills.length} - ${tribute.kills}`);
     $("#statsModalCauseOfDeath").html(`Cause of death: ${tribute.causeOfDeath}`);
@@ -217,7 +217,16 @@ $("#stats").on('click', (e) => {
     const t = e.target;
     if (t.classList.contains("layer"))
     {
-        putStatsInModal(t.parentNode);
+        putStatsInModal(t.parentNode.id);
+        $("#statsModal").modal('show');
+    }
+});
+
+$("#printout").on('click', (e) => {
+    if (e.target.classList.contains("opens-stats"))
+    {
+        const id = e.target.classList[1];
+        putStatsInModal(id);
         $("#statsModal").modal('show');
     }
 });

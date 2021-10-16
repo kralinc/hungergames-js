@@ -1,3 +1,24 @@
+String.prototype.format = function() {
+    var args = arguments;
+    return this.replace(/\$\{p(\d)\}/g, function(match, id) {
+        return args[id];
+    });
+};
+
+const flavorTextSleep = [
+    "${p0} rests for the night.",
+    "${p0} make a bed from some leaves.",
+    "${p0} cries themself to sleep.",
+    "${p0} sleeps under the stars.",
+    "${p0} dreams about home.",
+    "${p0} curls up next to a bush.",
+    "${p0} tries to keep watch, but drifts off.",
+    "${p0} sleeps in a tree."
+];
+
+const flavorTexts = new Map();
+flavorTexts.set("sleep", flavorTextSleep);
+
 function Pos(x, y)
 {
     this.x = x;
@@ -117,9 +138,10 @@ class Util {
         return firstNames[Util.randInt(0, firstNames.length - 1)] + " " + lastNames[Util.randInt(0, lastNames.length - 1)];
     }
 
-    getFlavorText(type)
+    static getFlavorText(type, p1, p2)
     {
-        
+        const texts = flavorTexts.get(type);
+        return texts[Util.randInt(0,texts.length - 1)].format(p1, p2);
     }
 }
 

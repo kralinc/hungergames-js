@@ -47,9 +47,14 @@ class ItemUtil {
             {name: 'yogurt', strength: 1},
             {name: 'trail mix', strength: 2},
             {name: 'a poison potato', strength: 0.05},
+            {name: 'gogurt', strength: 1.1},
+            {name: 'soup', strength: 1},
+            {name: 'a regular potato', strength: 0.5},
+            {name: 'a potato with butter', strength: 2},
+            {name: 'potato salad', strength: 1.7}
         ],
         'water': [
-            {name: 'water', strength: 2},
+            {name: 'bottled water', strength: 3},
             {name: 'caprisun', strength: 0.8},
             {name: 'gatorade', strength: 1},
             {name: 'lemonade', strength: 1},
@@ -57,6 +62,9 @@ class ItemUtil {
             {name: 'pond water', strength: 0.75},
             {name: 'pop', strength: 1},
             {name: 'monster energy', strength: 1.8},
+            {name: 'vitamin water', strength: 1},
+            {name: 'koolaid', strength: 1.2},
+            {name: 'apple juice', strength: 1.5}
         ],
         'medicine': [
             {name: 'morphine', strength: 20},
@@ -79,10 +87,12 @@ class ItemUtil {
             {name: 'a crossbow', strength: 6},
             {name: 'a bow', strength: 5.5},
             {name: 'a compound bow', strength: 6.25},
-            {name: 'a shiv', strength: 0.8},
+            {name: 'a shiv', strength: 0.5},
             {name: 'a hunting knife', strength: 1.25},
-            {name: 'a steak knife', strength: 0.5},
+            {name: 'a steak knife', strength: 0.8},
             {name: 'a dagger', strength: 1},
+            {name: 'a sharp stick', strength: 0.75},
+            {name: 'a sharp rock', strength: 0.5}
         ]
     };
 }
