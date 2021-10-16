@@ -155,6 +155,19 @@ function createMap()
     // }
 }
 
+function putStatsInModal(t) {
+    const tributeId = parseInt(t.id.split("-")[2]);
+    const allTributes = [...SINGLETON.tributes].concat(SINGLETON.deadTributes);
+    const tribute = SINGLETON.findTributeById(tributeId, allTributes);
+    $("#statsModalTitle").html(`${tribute.name} (${tribute.district})`);
+    $("#statsModalDaysSurvived").html(`Days survived: ${tribute.daysSurvived}`);
+    $("#statsModalImg").html(t.outerHTML);
+    $("#statsModalLocation").html("Location: " + tribute.position.x + ", " + tribute.position.y);
+    $("#statsModalKills").html(`Kills: ${tribute.kills.length} - ${tribute.kills}`);
+    $("#statsModalCauseOfDeath").html(`Cause of death: ${tribute.causeOfDeath}`);
+    $("#statsModalInventory").html(`Inventory: ${JSON.stringify(tribute.inventory)}`);
+}
+
 function step()
 {
     SINGLETON.stepDay();
@@ -193,4 +206,17 @@ $("#boring-check").on('change', (e) => {
     }else {
         $(".boring").removeClass("hidden");
     }
+});
+
+$("#stats").on('click', (e) => {
+    const t = e.target;
+    if (t.classList.contains("layer"))
+    {
+        putStatsInModal(t.parentNode);
+        $("#statsModal").modal('show');
+    }
+});
+
+$("button[data-dismiss='modal']").on('click', () => {
+    $("#statsModal").modal('hide');
 });

@@ -19,6 +19,7 @@ class Tribute {
         this.health = 100;
         this.hunger = 100;
         this.thirst = 100;
+        this.daysSurvived = 0;
         this.kills = [];
         this.debuffs = [];
         this.inventory = {
@@ -44,7 +45,7 @@ class Tribute {
         {
             this.singleton.putInDeathQueue(this);
             r.action = `${this.name} died of hunger.`;
-            r.causeOfDeath = "Died of hunger.";
+            this.causeOfDeath = "Died of hunger.";
             return r;
         }
 
@@ -52,7 +53,7 @@ class Tribute {
         {
             this.singleton.putInDeathQueue(this);
             r.action = `${this.name} died of thirst.`;
-            r.causeOfDeath = "Died of thirst.";
+            this.causeOfDeath = "Died of thirst.";
             return r;
         }
 
@@ -132,6 +133,7 @@ class Tribute {
         this.thirst -= THIRST_DEPLETION;
 
         r.action = actionTaken;
+        this.daysSurvived = this.singleton.day;
         return r;
     }
 
@@ -267,8 +269,10 @@ class Tribute {
         let output = `${this.name},${thisWeaponText} fought ${opponent.name},${opponentWeaponText} `;
         if (opponent.health <= 0)
         {
+            opponent.causeOfDeath = `Killed by ${this.name} (${this.district})`;
             this.singleton.putInDeathQueue(opponent);
             output += `${opponent.name} died in battle. `;
+            this.kills.push(`${opponent.name} (${opponent.district})`);
         }else if (opponent.health <= 15)
         {
             output += `${this.name} gravely wounded ${opponent.name}. `;
@@ -276,7 +280,9 @@ class Tribute {
 
         if (this.health <= 0)
         {
+            this.causeOfDeath = `Killed by ${opponent.name} (${opponent.district})`;
             this.singleton.putInDeathQueue(this);
+            opponent.kills.push(`${this.name} (${this.district})`);
             output += `${this.name} died fighting.`;
         }
         else if (this.health <= 15)
@@ -330,6 +336,7 @@ class Tribute {
 
         if (this.health <= 0)
         {
+            this.causeOfDeath = "Killed by " + trap.name;
             this.singleton.putInDeathQueue(this);
             return `${this.name} was killed by ${trap.name} at ${this.position.x},${this.position.y}!`;
         }else if (this.health < 33)
