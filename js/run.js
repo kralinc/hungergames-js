@@ -96,7 +96,7 @@ function compileTributes()
         tributes.push(new Tribute(i * 2, trib1Name, districtName, trib1Color, "warm", SINGLETON.map, SINGLETON));
         let lastTribute = tributes[tributes.length - 1];
         //create tribute 1 piece on board
-        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
+        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}-content`)
         .append(`<div 
                     id='trib-${lastTribute.id}'
                     class='tribute' 
@@ -117,7 +117,7 @@ function compileTributes()
         tributes.push(new Tribute(i * 2 + 1, trib2Name, districtName, trib2Color, "warm", SINGLETON.map, SINGLETON));
         lastTribute = tributes[tributes.length - 1];
         //Create tribute 2 piece on board
-        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}`)
+        $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}-content`)
         .append(`<div 
                     id='trib-${lastTribute.id}'
                     class='tribute' 
@@ -140,19 +140,23 @@ function compileTributes()
 
 function createMap()
 {
+    // for (let i = 0; i < SINGLETON.map.size; i++)
+    // {
+    //     $("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
+    //     for (let j = 0; j < SINGLETON.map.size; j++)
+    //     {
+    //         $(`#map-row-${i}`).append(`<div id='tile-${j}-${i}' class='tile'></div>`)
+    //     }
+    // }
     for (let i = 0; i < SINGLETON.map.size; i++)
     {
-        $("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
         for (let j = 0; j < SINGLETON.map.size; j++)
         {
-            $(`#map-row-${i}`).append(`<div id='tile-${j}-${i}' class='tile'></div>`)
+            //$("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
+            $(`#map-container`).append(`<div id='tile-${j}-${i}' class='tile'></div>`);
+            $(`#tile-${j}-${i}`).append(`<div id='tile-${j}-${i}-content' class='tile-content'></div>`);
         }
     }
-    // for (let i = 0; i < SINGLETON.map.size * SINGLETON.map.size; i++)
-    // {
-    //     const newRow = `<div class='tile'></div>`
-    //     $("#map-container").append(newRow);
-    // }
 }
 
 function putStatsInModal(t) {

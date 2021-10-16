@@ -43,17 +43,17 @@ class Tribute {
 
         if (this.hunger <= 0)
         {
-            this.singleton.putInDeathQueue(this);
             r.action = `${this.name} died of hunger.`;
             this.causeOfDeath = "Died of hunger.";
+            this.singleton.putInDeathQueue(this);
             return r;
         }
 
         if (this.thirst <= 0)
         {
-            this.singleton.putInDeathQueue(this);
             r.action = `${this.name} died of thirst.`;
             this.causeOfDeath = "Died of thirst.";
+            this.singleton.putInDeathQueue(this);
             return r;
         }
 
@@ -149,7 +149,7 @@ class Tribute {
 
         const mapItem = $(`#trib-${this.id}`);
         $(`#trib-${this.id}`).remove();
-        $(`#tile-${this.position.x}-${this.position.y}`).append(mapItem);
+        $(`#tile-${this.position.x}-${this.position.y}-content`).append(mapItem);
 
         if (Math.random() < MOVE_TRAP_CHANCE)
         {
@@ -229,17 +229,16 @@ class Tribute {
             this.inventory[item.type] = [];
         }
 
-        if (item.type == "weapon")
+        this.inventory[item.type].push(item);
+        if (item.type == "weapon" && this.inventory[item.type].length > 1)
         {
-            if ((this.inventory["weapon"][0] && this.inventory["weapon"][0].strength < item.strength)
-            || !this.inventory["weapon"][0])
+            if (this.inventory[item.type][0].strength < this.inventory[item.type][1].strength)
             {
-                this.inventory["weapon"][0] = item;
-                return;
+                this.inventory[item.type].shift();
+            }else {
+                this.inventory[item.type].pop();
             }
         }
-
-        this.inventory[item.type].push(item);
     }
 
     #fight(phase)
@@ -250,7 +249,8 @@ class Tribute {
 
         if (phase == "night" && opponent.sleeping)
         {
-            
+            // TODO implement
+            return `${this.name} watches ${opponent.name} while they sleep`;
         }
         else
         {

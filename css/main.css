@@ -12,17 +12,34 @@
 }
 
 #map-container {
-    width: 615px;
-    overflow: auto;
+    /* width: 615px; */
+    /* overflow: auto; */
+    display: flex;
+    flex-wrap: wrap;
 }
 
 .tile {
-    width: 150px;
-    height: 150px;
+    /* width: 150px;
+    height: 150px; */
     box-sizing: border-box;
     border: 1px solid black;
-    display: inline-block;
-    overflow: auto;
+    /* display: inline-block;
+    overflow: auto; */
+    position: relative;
+    flex-basis: 25%;
+}
+
+.tile::before {
+    content: '';
+    display: block;
+    padding-top: 100%;
+  }
+
+.tile-content {
+    position: absolute;
+    top: 0; left: 0;
+    height: 100%;
+    width: 100%;
 }
 
 #printout, #stats {

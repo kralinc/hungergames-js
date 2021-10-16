@@ -2,6 +2,10 @@ import Map from './map.js';
 
 const EVENT_CHANCE = 0.06;
 
+/*
+    TODO: Land features that change what actions are possible in the area, as well as changing the graphics of the tile
+*/
+
 class Singleton {
     constructor(mapSize)
     {

@@ -116,6 +116,11 @@ class Util {
 
         return firstNames[Util.randInt(0, firstNames.length - 1)] + " " + lastNames[Util.randInt(0, lastNames.length - 1)];
     }
+
+    getFlavorText(type)
+    {
+        
+    }
 }
 
 export {Pos, Util};

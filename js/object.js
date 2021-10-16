@@ -46,6 +46,7 @@ class ItemUtil {
             {name: 'an apple', strength: 0.5},
             {name: 'yogurt', strength: 1},
             {name: 'trail mix', strength: 2},
+            {name: 'a poison potato', strength: 0.05},
         ],
         'water': [
             {name: 'water', strength: 2},
