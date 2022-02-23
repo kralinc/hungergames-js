@@ -92,7 +92,8 @@ class ItemUtil {
             {name: 'a steak knife', strength: 0.8},
             {name: 'a dagger', strength: 1},
             {name: 'a sharp stick', strength: 0.75},
-            {name: 'a sharp rock', strength: 0.5}
+            {name: 'a sharp rock', strength: 0.5},
+            {name: 'a Browning Citori 725 Trap Max Black/Silver/Walnut 12 Gauge 2-3/4in Over Under Shotgun - 32in', strength: 10},
         ]
     };
 }

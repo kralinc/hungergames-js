@@ -67,6 +67,15 @@
     height: 80px;
 }
 
+.avatar.dead, .tribute.dead {
+    background-image: url(http://cdn.onlinewebfonts.com/svg/img_493013.png);
+}
+
+.tribute.dead {
+    background-color: #fff;
+    background-size: cover;
+}
+
 .layer {
     top: 0;
     left: 0;

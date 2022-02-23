@@ -98,7 +98,7 @@ function compileTributes()
         //create tribute 1 piece on board
         $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}-content`)
         .append(`<div 
-                    id='trib-${lastTribute.id}'
+                    id='trib-tile-${lastTribute.id}'
                     class='tribute' 
                     style='background-color: ${lastTribute.color}'
                     data-bs-toggle='tooltip' data-bs-placement='top' 
@@ -119,7 +119,7 @@ function compileTributes()
         //Create tribute 2 piece on board
         $(`#tile-${lastTribute.position.x}-${lastTribute.position.y}-content`)
         .append(`<div 
-                    id='trib-${lastTribute.id}'
+                    id='trib-tile-${lastTribute.id}'
                     class='tribute' 
                     style='background-color: ${lastTribute.color}'
                     data-bs-toggle='tooltip' data-bs-placement='top' 
@@ -140,26 +140,18 @@ function compileTributes()
 
 function createMap()
 {
-    // for (let i = 0; i < SINGLETON.map.size; i++)
-    // {
-    //     $("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
-    //     for (let j = 0; j < SINGLETON.map.size; j++)
-    //     {
-    //         $(`#map-row-${i}`).append(`<div id='tile-${j}-${i}' class='tile'></div>`)
-    //     }
-    // }
     for (let i = 0; i < SINGLETON.map.size; i++)
     {
         for (let j = 0; j < SINGLETON.map.size; j++)
         {
-            //$("#map-container").append(`<div id='map-row-${i}' class='row'></div>`);
             $(`#map-container`).append(`<div id='tile-${j}-${i}' class='tile'></div>`);
             $(`#tile-${j}-${i}`).append(`<div id='tile-${j}-${i}-content' class='tile-content'></div>`);
         }
     }
 }
 
-function putStatsInModal(id) {
+function putStatsInModal(id) 
+{
     const tributeId = parseInt(id.split("-")[2]);
     const allTributes = [...SINGLETON.tributes].concat(SINGLETON.deadTributes);
     const tribute = SINGLETON.findTributeById(tributeId, allTributes);
@@ -170,7 +162,7 @@ function putStatsInModal(id) {
     $("#statsModalLocation").html("Location: " + tribute.position.x + ", " + tribute.position.y);
     $("#statsModalKills").html(`Kills: ${tribute.kills.length} - ${tribute.kills}`);
     $("#statsModalCauseOfDeath").html(`Cause of death: ${tribute.causeOfDeath}`);
-    $("#statsModalInventory").html(`Inventory: ${JSON.stringify(tribute.inventory)}`);
+    $("#statsModalInventory").html(`Inventory: <pre>${JSON.stringify(tribute.inventory, null, 2)}</pre>`);
 }
 
 function step()
@@ -218,6 +210,14 @@ $("#stats").on('click', (e) => {
     if (t.classList.contains("layer"))
     {
         putStatsInModal(t.parentNode.id);
+        $("#statsModal").modal('show');
+    }
+});
+
+$("#map-container").on('click', (e) => {
+    if (e.target.classList.contains("tribute"))
+    {
+        putStatsInModal(e.target.id);
         $("#statsModal").modal('show');
     }
 });

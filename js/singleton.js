@@ -84,13 +84,12 @@ class Singleton {
             const deadIndex = this.tributes.indexOf(tribute);
             const dead = this.tributes.splice(deadIndex, 1)[0];
 
-            $(`#trib-${dead.id}`).css("background-color", "white");
-            $(`#trib-${dead.id}`).css("background-image", "url(http://cdn.onlinewebfonts.com/svg/img_493013.png)");
-            $(`#trib-${dead.id}`).css("background-size", "cover");
+            $(`#trib-tile-${dead.id}`).addClass("dead");
+            $(`#trib-tile-${dead.id}`).removeAttr("style");
             dead.getTile().tributes.splice(dead.getTile().tributes.indexOf(dead), 1);
 
             this.deadTributes.push(dead);
-            $(`#trib-avatar-${dead.id}`).css("background-image", "url(http://cdn.onlinewebfonts.com/svg/img_493013.png)");
+            $(`#trib-avatar-${dead.id}`).addClass("dead");
 
             if (this.currentTribute <= deadIndex && this.currentTribute != 0)
             {

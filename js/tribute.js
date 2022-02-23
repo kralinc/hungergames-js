@@ -2,7 +2,9 @@ import {Pos, Util} from "./util.js";
 
 const DEFAULT_FOOD_STRENGTH = 35;
 const HUNGER_DEPLETION = 1.85;
+const HUNGER_HEALTH_DEPLETION = 10;
 const THIRST_DEPLETION = 2;
+const THIRST_HEALTH_DEPLETION = 25;
 const FORAGE_FIND_NOTHING_CHANCE = 0.1;
 const MOVE_TRAP_CHANCE = 0.1;
 const SLEEP_HEALTH_REGEN = 5;
@@ -22,8 +24,7 @@ class Tribute {
         this.daysSurvived = 0;
         this.kills = [];
         this.debuffs = [];
-        this.inventory = {
-        }
+        this.inventory = {}
         this.position = new Pos(this.map.getSize() / 2, this.map.getSize() / 2);
         this.getTile().tributes.push(this);
 
@@ -43,18 +44,24 @@ class Tribute {
 
         if (this.hunger <= 0)
         {
-            r.action = `${this.name} died of hunger.`;
-            this.causeOfDeath = "Died of hunger.";
-            this.singleton.putInDeathQueue(this);
-            return r;
+            this.health -= HUNGER_HEALTH_DEPLETION;
+            if (this.health <= 0) {
+                r.action = `${this.name} died of hunger.`;
+                this.causeOfDeath = "Died of hunger.";
+                this.singleton.putInDeathQueue(this);
+                return r;
+            }
         }
 
         if (this.thirst <= 0)
         {
-            r.action = `${this.name} died of thirst.`;
-            this.causeOfDeath = "Died of thirst.";
-            this.singleton.putInDeathQueue(this);
-            return r;
+            this.health -= THIRST_HEALTH_DEPLETION;
+            if (this.health <= 0) {
+                r.action = `${this.name} died of thirst.`;
+                this.causeOfDeath = "Died of thirst.";
+                this.singleton.putInDeathQueue(this);
+                return r;
+            }
         }
 
         //Moving is the default action
@@ -129,8 +136,8 @@ class Tribute {
             actionTaken = this.#move(r);
         }
 
-        this.hunger -= HUNGER_DEPLETION;
-        this.thirst -= THIRST_DEPLETION;
+        this.hunger = (this.hunger <= 0) ? 0 : this.hunger - HUNGER_DEPLETION;
+        this.thirst = (this.thirst <= 0) ? 0 : this.thirst -THIRST_DEPLETION;
 
         r.action = actionTaken;
         this.daysSurvived = this.singleton.day;
@@ -147,16 +154,16 @@ class Tribute {
         this.position.y += moveY;
         this.getTile().tributes.push(this);
 
-        const mapItem = $(`#trib-${this.id}`);
-        $(`#trib-${this.id}`).remove();
+        const mapItem = $(`#trib-tile-${this.id}`);
+        $(`#trib-tile-${this.id}`).remove();
         $(`#tile-${this.position.x}-${this.position.y}-content`).append(mapItem);
 
-        if (Math.random() < MOVE_TRAP_CHANCE)
+        if (this.getTile().traps.length > 0 && Math.random() < MOVE_TRAP_CHANCE)
         {
             return this.#trap();
         }else {
             r.boring = true;
-            return `${this.name} moved from ${this.position.x - moveX},${this.position.y-moveY} to ${this.position.x},${this.position.y}`;
+            return `${this.getNameHTML()} moved from ${this.position.x - moveX},${this.position.y-moveY} to ${this.position.x},${this.position.y}`;
         }
     }
 
@@ -166,7 +173,7 @@ class Tribute {
         {
             let eaten = this.inventory.food.pop();
             this.hunger += DEFAULT_FOOD_STRENGTH * eaten.strength;
-            return `${this.name} ate ${eaten.name} from their inventory.`;
+            return `${this.getNameHTML()} ate ${eaten.name} from their inventory.`;
         }else {
             return this.#forage("food");
         }
@@ -178,7 +185,7 @@ class Tribute {
         {
             let eaten = this.inventory.water.pop();
             this.thirst += DEFAULT_FOOD_STRENGTH * eaten.strength;
-            return `${this.name} drank ${eaten.name} from their inventory.`;
+            return `${this.getNameHTML()} drank ${eaten.name} from their inventory.`;
         }else {
             return this.#forage("water");
         }
@@ -190,7 +197,7 @@ class Tribute {
         {
             let taken = this.inventory.medicine.pop();
             this.health += taken.strength;
-            return `${this.name} took ${taken.name} from their inventory.`;
+            return `${this.getNameHTML()} took ${taken.name} from their inventory.`;
         }else {
             return this.#forage("medicine");
         }
@@ -213,12 +220,12 @@ class Tribute {
         if (itemForaged == null || Math.random() < FORAGE_FIND_NOTHING_CHANCE)
         {
             this.previouslyFoundNothing = true;
-            return `${this.name} foraged for ${target}, but found nothing.`;
+            return `${this.getNameHTML()} foraged for ${target}, but found nothing.`;
         }
         else {
             let andbut = (itemForaged.type == target) ? "and" : "but";
             this.addToInventory(itemForaged);
-            return `${this.name} foraged for ${target}, ${andbut} found ${itemForaged.name}`;
+            return `${this.getNameHTML()} foraged for ${target}, ${andbut} found ${itemForaged.name}`;
         }
     }
 
@@ -250,7 +257,7 @@ class Tribute {
         if (phase == "night" && opponent.sleeping)
         {
             // TODO implement
-            return `${this.name} watches ${opponent.getNameHTML()} while they sleep`;
+            return `${this.getNameHTML()} watches ${opponent.getNameHTML()} while they sleep`;
         }
         else
         {
@@ -279,7 +286,7 @@ class Tribute {
         let output = `${this.getNameHTML()},${thisWeaponText} fought ${opponent.getNameHTML()},${opponentWeaponText}`;
         if (opponent.health <= 0)
         {
-            opponent.causeOfDeath = `Killed by ${this.name} (${this.district})`;
+            opponent.causeOfDeath = `Killed by ${this.name} (${this.district}) with ${this.weapon.name}`;
             this.singleton.putInDeathQueue(opponent);
             output += `${opponent.getNameHTML()} died in battle.`;
             this.kills.push(`${opponent.name} (${opponent.district})`);
@@ -290,7 +297,7 @@ class Tribute {
 
         if (this.health <= 0)
         {
-            this.causeOfDeath = `Killed by ${opponent.name} (${opponent.district})`;
+            this.causeOfDeath = `Killed by ${opponent.name} (${opponent.district}) with ${opponent.weapon.name}`;
             this.singleton.putInDeathQueue(this);
             opponent.kills.push(`${this.name} (${this.district})`);
             output += `${this.getNameHTML()} died fighting.`;
@@ -327,37 +334,8 @@ class Tribute {
 
     #trap()
     {
-        const TRAPS = [
-            {name: "a bear trap", strength: 20},
-            {name: "a poison dart trap", strength: 100},
-            {name: "a landmine", strength: 200},
-            {name: "floor spikes", strength: 100},
-            {name: "a flamethrower", strength: 80},
-            {name: "a pitfall", strength: 50},
-        ];
-
-        const trap = TRAPS[Util.randInt(0, TRAPS.length - 1)];
-        const damage = Util.randInt(0, trap.strength);
-
-        if (damage == 0)
-        {
-            return `${this.name} dodged ${trap.name} at ${this.position.x},${this.position.y}.`;
-        }
-
-        this.health -= damage;
-
-        if (this.health <= 0)
-        {
-            this.causeOfDeath = "Killed by " + trap.name;
-            this.singleton.putInDeathQueue(this);
-            return `${this.name} was killed by ${trap.name} at ${this.position.x},${this.position.y}!`;
-        }else if (this.health < 33)
-        {
-            return `${this.name} was seriously injured by ${trap.name} at ${this.position.x},${this.position.y}.`;
-        }
-        else {
-            return `${this.name} got caught in ${trap.name} at ${this.position.x},${this.position.y}.`;
-        }
+        const trap = this.getTile().traps.pop();
+        return trap.trigger(this);
     }
 
     targetRandomTributeInTile()
