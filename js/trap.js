@@ -12,7 +12,7 @@ class Trap {
 
         if (damage == 0)
         {
-            return `${tribute.name} dodged ${this.name} at ${tribute.position.x},${tribute.position.y}.`;
+            return `${tribute.getNameHTML()} dodged ${this.name} at ${tribute.position.x},${tribute.position.y}.`;
         }
 
         tribute.health -= damage;
@@ -21,13 +21,13 @@ class Trap {
         {
             tribute.causeOfDeath = "Killed by " + this.name;
             tribute.singleton.putInDeathQueue(tribute);
-            return `${tribute.name} was killed by ${this.name} at ${tribute.position.x},${tribute.position.y}!`;
+            return `${tribute.getNameHTML()} was killed by ${this.name} at ${tribute.position.x},${tribute.position.y}!`;
         }else if (tribute.health < 33)
         {
-            return `${tribute.name} was seriously injured by ${this.name} at ${tribute.position.x},${tribute.position.y}.`;
+            return `${tribute.getNameHTML()} was seriously injured by ${this.name} at ${tribute.position.x},${tribute.position.y}.`;
         }
         else {
-            return `${tribute.name} got caught in ${this.name} at ${tribute.position.x},${tribute.position.y}.`;
+            return `${tribute.getNameHTML()} got caught in ${this.name} at ${tribute.position.x},${tribute.position.y}.`;
         }
     }
 

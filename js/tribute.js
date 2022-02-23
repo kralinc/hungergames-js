@@ -2,7 +2,9 @@ import {Pos, Util} from "./util.js";
 
 const DEFAULT_FOOD_STRENGTH = 35;
 const HUNGER_DEPLETION = 1.85;
+const HUNGER_HEALTH_DEPLETION = 10;
 const THIRST_DEPLETION = 2;
+const THIRST_HEALTH_DEPLETION = 25;
 const FORAGE_FIND_NOTHING_CHANCE = 0.1;
 const MOVE_TRAP_CHANCE = 0.1;
 const SLEEP_HEALTH_REGEN = 5;
@@ -42,18 +44,24 @@ class Tribute {
 
         if (this.hunger <= 0)
         {
-            r.action = `${this.name} died of hunger.`;
-            this.causeOfDeath = "Died of hunger.";
-            this.singleton.putInDeathQueue(this);
-            return r;
+            this.health -= HUNGER_HEALTH_DEPLETION;
+            if (this.health <= 0) {
+                r.action = `${this.name} died of hunger.`;
+                this.causeOfDeath = "Died of hunger.";
+                this.singleton.putInDeathQueue(this);
+                return r;
+            }
         }
 
         if (this.thirst <= 0)
         {
-            r.action = `${this.name} died of thirst.`;
-            this.causeOfDeath = "Died of thirst.";
-            this.singleton.putInDeathQueue(this);
-            return r;
+            this.health -= THIRST_HEALTH_DEPLETION;
+            if (this.health <= 0) {
+                r.action = `${this.name} died of thirst.`;
+                this.causeOfDeath = "Died of thirst.";
+                this.singleton.putInDeathQueue(this);
+                return r;
+            }
         }
 
         //Moving is the default action
@@ -128,8 +136,8 @@ class Tribute {
             actionTaken = this.#move(r);
         }
 
-        this.hunger -= HUNGER_DEPLETION;
-        this.thirst -= THIRST_DEPLETION;
+        this.hunger = (this.hunger <= 0) ? 0 : this.hunger - HUNGER_DEPLETION;
+        this.thirst = (this.thirst <= 0) ? 0 : this.thirst -THIRST_DEPLETION;
 
         r.action = actionTaken;
         this.daysSurvived = this.singleton.day;
