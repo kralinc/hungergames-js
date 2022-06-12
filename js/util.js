@@ -64,16 +64,21 @@ class Util {
             sum += item[1];
         }
         //redo weights
-        for (let item of weights)
+        for (let i = 0; i < weights.length; i++)
         {
-            item[1] = 1 - (item[1] / sum);
+            if (i > 0) {
+                weights[i][1] = (weights[i][1] / sum) + weights[i - 1][1];
+            }
+            else {
+                weights[i][1] = (weights[i][1] / sum);
+            }
         }
 
         const rand = Math.random();
 
         for (let item of weights)
         {
-            if (item[1] < rand)
+            if (item[1] >= rand)
             {
                 return item[0];
             }

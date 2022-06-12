@@ -1,4 +1,5 @@
 import {Pos, Util} from "./util.js";
+import {Terrain, TerrainType, TerrainFeature} from "./terrain.js";
 
 const DEFAULT_FOOD_STRENGTH = 35;
 const HUNGER_DEPLETION = 1.85;
@@ -67,7 +68,7 @@ class Tribute {
         //Moving is the default action
         //It is more likely to happen if they foraged and found nothing
         //    (not including at night, to not conflict with sleep)
-        let moveWeight = 1 * ((this.previouslyFoundNothing && phase != "night") ? 3 : 1);
+        let moveWeight = 1 * ((this.previouslyFoundNothing && phase != "night") ? 10 : 1);
 
         //Recovering stats gets exponentially more likely the less of that stat they have
         let foodWeight = 1 * (10/(this.hunger - 5));
@@ -113,7 +114,12 @@ class Tribute {
         }
         else if (actionToTake == "getWater")
         {
-            actionTaken = this.#getWater();
+            if (this.getTile().terrain.type == TerrainType.DESERT)
+            {
+                actionTaken = this.#move(r);
+            }else {
+                actionTaken = this.#getWater();
+            }
         }
         else if (actionToTake == "getWeapon")
         {
@@ -254,60 +260,84 @@ class Tribute {
         let thisWinWeight = this.#drawWeapon(this);
         let opponentWinWeight = this.#drawWeapon(opponent);
 
-        if (phase == "night" && opponent.sleeping)
+        if (phase == "night" && opponent.sleeping && !this.getTile().terrain.feature == TerrainFeature.DENSE_TREES)
         {
-            // TODO implement
-            return `${this.getNameHTML()} watches ${opponent.getNameHTML()} while they sleep`;
+            if (Math.random() < 0.5) {
+                opponent.health -= 1000;
+                opponent.causeOfDeath = `Snuck up on by ${this.name} (${this.district}) in their sleep`;
+                this.kills.push(`${opponent.name} (${opponent.district})`);
+                return `${this.getNameHTML()} murdered ${opponent.getNameHTML()} in their sleep!`;
+            }else {
+                return `${this.getNameHTML()} watches ${opponent.getNameHTML()} while they sleep`;
+            }
+        }
+        //Sneak attack
+        else if (this.getTile().terrain.feature == TerrainFeature.DENSE_TREES && opponent.weapon.name == "nothing" && this.weapon.name != "nothing") {
+            let sneakAttackString = `${this.getNameHTML()} sneak-attacked ${opponent.getNameHTML()} with ${this.weapon.name}! ${opponent.getNameHTML()} was `;
+            opponent.health -= Util.randInt(20 * this.weapon.strength, 100);
+            if (opponent.health <= 0)
+            {
+                opponent.causeOfDeath = `Snuck up on by ${this.name} (${this.district})`;
+                this.kills.push(`${opponent.name} (${opponent.district})`);
+                sneakAttackString += "killed!";
+            }else if (opponent.health <= 10)
+            {
+                sneakAttackString += "gravely wounded.";
+            }else
+            {
+                sneakAttackString += "injured";
+            }
+            return sneakAttackString;
         }
         else
         {
 
-        const fightResult = Util.randomFromWeight([["this", thisWinWeight], ["opponent", opponentWinWeight]]);
-        const winner = (fightResult == "this") ? this : opponent;
-        const loser = (winner == this) ? opponent : this;
+            const fightResult = Util.randomFromWeight([["this", thisWinWeight], ["opponent", opponentWinWeight]]);
+            const winner = (fightResult == "this") ? this : opponent;
+            const loser = (winner == this) ? opponent : this;
 
-        let winnerMaxHealthLost = 10;
-        if (loser.weapon != null)
-        {
-            winnerMaxHealthLost += 20;
-        }
+            let winnerMaxHealthLost = 10;
+            if (loser.weapon.name != "nothing")
+            {
+                winnerMaxHealthLost += 8 * loser.weapon.strength;
+            }
 
-        let loserMinHealthLost = 50;
-        if (winner.weapon != null)
-        {
-            loserMinHealthLost += 25;
-        }
+            let loserMinHealthLost = 50;
+            if (winner.weapon.name != "nothing")
+            {
+                loserMinHealthLost += 20 * winner.weapon.strength;
+            }
 
-        loser.health -= Util.randInt(50, 100);
-        winner.health -= Util.randInt(0, winnerMaxHealthLost);
-        let thisWeaponText = (this.weapon == null) ? " unarmed," : ` armed with ${this.weapon.name},`;
-        let opponentWeaponText = (opponent.weapon == null) ? " unarmed." : ` armed with ${opponent.weapon.name}. `;
+            loser.health -= Util.randInt(loserMinHealthLost, 100);
+            winner.health -= Util.randInt(0, winnerMaxHealthLost);
+            let thisWeaponText = (this.weapon == null) ? " unarmed," : ` armed with ${this.weapon.name},`;
+            let opponentWeaponText = (opponent.weapon == null) ? " unarmed." : ` armed with ${opponent.weapon.name}. `;
 
-        let output = `${this.getNameHTML()},${thisWeaponText} fought ${opponent.getNameHTML()},${opponentWeaponText}`;
-        if (opponent.health <= 0)
-        {
-            opponent.causeOfDeath = `Killed by ${this.name} (${this.district}) with ${this.weapon.name}`;
-            this.singleton.putInDeathQueue(opponent);
-            output += `${opponent.getNameHTML()} died in battle.`;
-            this.kills.push(`${opponent.name} (${opponent.district})`);
-        }else if (opponent.health <= 15)
-        {
-            output += `${this.name} gravely wounded ${opponent.name}. `;
-        }
+            let output = `${this.getNameHTML()},${thisWeaponText} fought ${opponent.getNameHTML()},${opponentWeaponText}`;
+            if (opponent.health <= 0)
+            {
+                opponent.causeOfDeath = `Killed by ${this.name} (${this.district}) with ${this.weapon.name}`;
+                this.singleton.putInDeathQueue(opponent);
+                output += `${opponent.getNameHTML()} died in battle.`;
+                this.kills.push(`${opponent.name} (${opponent.district})`);
+            }else if (opponent.health <= 15)
+            {
+                output += `${this.name} gravely wounded ${opponent.name}. `;
+            }
 
-        if (this.health <= 0)
-        {
-            this.causeOfDeath = `Killed by ${opponent.name} (${opponent.district}) with ${opponent.weapon.name}`;
-            this.singleton.putInDeathQueue(this);
-            opponent.kills.push(`${this.name} (${this.district})`);
-            output += `${this.getNameHTML()} died fighting.`;
-        }
-        else if (this.health <= 15)
-        {
-            output += `${opponent.name} gravely wounded ${this.name}.`;
-        }
+            if (this.health <= 0)
+            {
+                this.causeOfDeath = `Killed by ${opponent.name} (${opponent.district}) with ${opponent.weapon.name}`;
+                this.singleton.putInDeathQueue(this);
+                opponent.kills.push(`${this.name} (${this.district})`);
+                output += `${this.getNameHTML()} died fighting.`;
+            }
+            else if (this.health <= 15)
+            {
+                output += `${opponent.name} gravely wounded ${this.name}.`;
+            }
 
-        return output;
+            return output;
         }
     }
 
@@ -319,8 +349,11 @@ class Tribute {
         if (tribute.hasItemOfType("weapon"))
         {
             tribute.weapon = tribute.inventory["weapon"][0];
-            weaponWeight += 1 * tribute.weapon.strength;
+        }else {
+            tribute.weapon = {name: "nothing", strength: 0.1};
         }
+
+        weaponWeight += 1 * tribute.weapon.strength;
 
         return weaponWeight;
     }
