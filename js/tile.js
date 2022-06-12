@@ -21,6 +21,7 @@ class Tile {
         if (this.x == 2 && this.y == 2)
         {
             this.terrain.feature = TerrainFeature.CORNUCOPIA;
+            this.terrain.type = TerrainType.PLAINS;
         }
         this.items = this.populateWithRandomItems();
         this.traps = (this.terrain.type == TerrainType.DESERT) ? [] : this.populateWithRandomTraps();
@@ -69,6 +70,11 @@ class Tile {
     {
         const item = (this.items.length > 0) ? this.items.pop() : null;
         return item;
+    }
+
+    putItem(type, item)
+    {
+        this.items[type].push(item);
     }
 
 }

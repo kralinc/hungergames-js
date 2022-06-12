@@ -248,10 +248,14 @@ class Tribute {
             if (this.inventory[item.type][0].strength < this.inventory[item.type][1].strength)
             {
                 this.inventory[item.type].shift();
+                return true;
             }else {
                 this.inventory[item.type].pop();
+                return false;
             }
         }
+
+        return true;
     }
 
     #fight(phase)
@@ -266,6 +270,7 @@ class Tribute {
                 opponent.health -= 1000;
                 opponent.causeOfDeath = `Snuck up on by ${this.name} (${this.district}) in their sleep`;
                 this.kills.push(`${opponent.name} (${opponent.district})`);
+                this.#lootOpponent(this, opponent);
                 return `${this.getNameHTML()} murdered ${opponent.getNameHTML()} in their sleep!`;
             }else {
                 return `${this.getNameHTML()} watches ${opponent.getNameHTML()} while they sleep`;
@@ -280,6 +285,7 @@ class Tribute {
                 opponent.causeOfDeath = `Snuck up on by ${this.name} (${this.district})`;
                 this.kills.push(`${opponent.name} (${opponent.district})`);
                 sneakAttackString += "killed!";
+                this.#lootOpponent(this, opponent);
             }else if (opponent.health <= 10)
             {
                 sneakAttackString += "gravely wounded.";
@@ -320,6 +326,7 @@ class Tribute {
                 this.singleton.putInDeathQueue(opponent);
                 output += `${opponent.getNameHTML()} ${Util.getFlavorText("diedInBattle")} `;
                 this.kills.push(`${opponent.name} (${opponent.district})`);
+                this.#lootOpponent(winner, loser);
             }else if (opponent.health <= 15)
             {
                 output += `${this.name} gravely wounded ${opponent.name}. `;
@@ -331,6 +338,7 @@ class Tribute {
                 this.singleton.putInDeathQueue(this);
                 opponent.kills.push(`${this.getNameHTML()} (${this.district})`);
                 output += `${this.getNameHTML()} ${Util.getFlavorText("diedInBattle")}`;
+                this.#lootOpponent(winner, loser);
             }
             else if (this.health <= 15)
             {
@@ -338,6 +346,18 @@ class Tribute {
             }
 
             return output;
+        }
+    }
+
+    #lootOpponent(looter, lootee) {
+        for (let type in lootee.inventory) {
+            for (let item of lootee.inventory[type]) {
+                if (!looter.addToInventory(item)) {
+                    looter.getTile().putItem(type, item);
+                }
+                //Remove from inventory
+                lootee.inventory[type].splice(lootee.inventory[type].indexOf(item), 1);
+            }
         }
     }
 
