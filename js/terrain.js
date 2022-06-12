@@ -11,6 +11,10 @@ class Terrain {
         }
     }
 
+    getFeatureClass() {
+        return this.feature.toLowerCase().replace(" ", "-");
+    }
+
     static getRandomType()
     {
         const types = [

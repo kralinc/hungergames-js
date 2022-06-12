@@ -144,7 +144,9 @@ function createMap()
     {
         for (let j = 0; j < SINGLETON.map.size; j++)
         {
-            $(`#map-container`).append(`<div id='tile-${j}-${i}' class='tile ${SINGLETON.map.getTile(j, i).terrain.type}'></div>`);
+            $(`#map-container`).append(`<div id='tile-${j}-${i}' class='tile 
+                                                                        ${SINGLETON.map.getTile(j, i).terrain.type} 
+                                                                        ${SINGLETON.map.getTile(j, i).terrain.getFeatureClass()}'></div>`);
             $(`#tile-${j}-${i}`).append(`<div id='tile-${j}-${i}-content' class='tile-content'></div>`);
         }
     }

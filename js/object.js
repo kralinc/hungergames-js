@@ -13,10 +13,10 @@ class ItemUtil {
 
     static getRandomItem()
     {
-        const foodweight = 1.7;
-        const waterweight = 1.3;
-        const medicineweight = 0.1;
-        const weaponWeight = 2;
+        const foodweight = 1;
+        const waterweight = 1;
+        const medicineweight = 0.5;
+        const weaponWeight = 1.5;
 
         const itemType = Util.randomFromWeight([
             ["food", foodweight],

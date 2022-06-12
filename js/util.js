@@ -16,8 +16,17 @@ const flavorTextSleep = [
     "${p0} sleeps in a tree."
 ];
 
+const diedInBattleFlavorText = [
+    "died in battle.",
+    "died fighting.",
+    "died in the struggle.",
+    "was killed.",
+    "didn't make it out alive.",
+];
+
 const flavorTexts = new Map();
 flavorTexts.set("sleep", flavorTextSleep);
+flavorTexts.set("diedInBattle", diedInBattleFlavorText);
 
 function Pos(x, y)
 {
@@ -148,6 +157,7 @@ class Util {
         const texts = flavorTexts.get(type);
         return texts[Util.randInt(0,texts.length - 1)].format(p1, p2);
     }
+
 }
 
 export {Pos, Util};

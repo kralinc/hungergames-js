@@ -98,3 +98,21 @@
 .hills {
     background-color: #7a3;
 }
+
+.sparsely-wooded {
+    background-image: url(../img/sparsely_wooded.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.lake-in {
+    background-image: url(../img/lake.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+.densely-wooded {
+    background-image: url(../img/densely_wooded.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+}

@@ -318,7 +318,7 @@ class Tribute {
             {
                 opponent.causeOfDeath = `Killed by ${this.name} (${this.district}) with ${this.weapon.name}`;
                 this.singleton.putInDeathQueue(opponent);
-                output += `${opponent.getNameHTML()} died in battle.`;
+                output += `${opponent.getNameHTML()} ${Util.getFlavorText("diedInBattle")} `;
                 this.kills.push(`${opponent.name} (${opponent.district})`);
             }else if (opponent.health <= 15)
             {
@@ -327,14 +327,14 @@ class Tribute {
 
             if (this.health <= 0)
             {
-                this.causeOfDeath = `Killed by ${opponent.name} (${opponent.district}) with ${opponent.weapon.name}`;
+                this.causeOfDeath = `Killed by ${opponent.getNameHTML()} (${opponent.district}) with ${opponent.weapon.name}`;
                 this.singleton.putInDeathQueue(this);
-                opponent.kills.push(`${this.name} (${this.district})`);
-                output += `${this.getNameHTML()} died fighting.`;
+                opponent.kills.push(`${this.getNameHTML()} (${this.district})`);
+                output += `${this.getNameHTML()} ${Util.getFlavorText("diedInBattle")}`;
             }
             else if (this.health <= 15)
             {
-                output += `${opponent.name} gravely wounded ${this.name}.`;
+                output += `${opponent.getNameHTML()} gravely wounded ${this.getNameHTML()}.`;
             }
 
             return output;
