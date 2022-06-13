@@ -1,11 +1,13 @@
 import Singleton from "./singleton.js";
 import Tribute from "./tribute.js";
 import {Util} from "./util.js";
+import {Item, ItemUtil} from "./object.js";
 
 let SINGLETON;
 let NUMDISTRICTS = 0;
 
 $(() => {
+    //test();
     createDistricts(12);
 });
 
@@ -158,7 +160,7 @@ function putStatsInModal(id)
     const allTributes = [...SINGLETON.tributes].concat(SINGLETON.deadTributes);
     const tribute = SINGLETON.findTributeById(tributeId, allTributes);
     $("#statsModalTitle").html(`${tribute.name} (${tribute.district})`);
-    $("#statsModalVitals").html(`Health: ${getStatWithColor(tribute.health)}
+    $("#statsModalVitals").html(`Health: ${getStatWithColor(tribute.health.toFixed(2))}
                                 Hunger: ${getStatWithColor(tribute.hunger.toFixed(2))}
                                 Thirst: ${getStatWithColor(tribute.thirst.toFixed(2))}`);
     $("#statsModalDaysSurvived").html(`Days survived: ${tribute.daysSurvived}`);
@@ -245,3 +247,9 @@ $("#printout").on('click', (e) => {
 $("button[data-dismiss='modal']").on('click', () => {
     $("#statsModal").modal('hide');
 });
+
+function test() {
+    for (let i = 0; i < 10; i++) {
+        console.log(ItemUtil.getRandomWithinType("weapon"));
+    }
+}

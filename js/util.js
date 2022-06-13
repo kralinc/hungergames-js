@@ -54,17 +54,13 @@ class Util {
             sum += item[1];
         }
         //redo weights
-        for (let i = 0; i < weights.length; i++)
+        for (let i = 1; i < weights.length; i++)
         {
-            if (i > 0) {
-                weights[i][1] = (weights[i][1] / sum) + weights[i - 1][1];
-            }
-            else {
-                weights[i][1] = (weights[i][1] / sum);
-            }
+            weights[i][1] += weights[i - 1][1];
+
         }
 
-        const rand = Math.random();
+        const rand = Math.random() * sum;
 
         for (let item of weights)
         {
@@ -75,6 +71,10 @@ class Util {
         }
 
         return weights[weights.length - 1][0];
+    }
+
+    static getRandom(list) {
+        return list[Util.randInt(0, list.length - 1)];
     }
 
     static randInt(min, max)

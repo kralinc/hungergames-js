@@ -2,13 +2,18 @@ import {Pos, Util} from "./util.js";
 import {Terrain, TerrainType, TerrainFeature} from "./terrain.js";
 
 const DEFAULT_FOOD_STRENGTH = 35;
-const HUNGER_DEPLETION = 1.85;
+const DEFAULT_WATER_STRENGTH = 24;
+const HUNGER_DEPLETION = 3;
 const HUNGER_HEALTH_DEPLETION = 10;
-const THIRST_DEPLETION = 2;
-const THIRST_HEALTH_DEPLETION = 25;
+const THIRST_DEPLETION = 6;
+const THIRST_HEALTH_DEPLETION = 15;
+const SLEEP_HEALTH_REGEN = 5;
+
 const FORAGE_FIND_NOTHING_CHANCE = 0.1;
 const MOVE_TRAP_CHANCE = 0.1;
-const SLEEP_HEALTH_REGEN = 5;
+const LAKE_POISON_CHANCE = 0.33;
+const LAKE_MAX_POISON_DAMAGE = 20;
+const LAKE_THIRST_REGEN = 30;
 
 class Tribute {
     constructor(id, name, district, color, personality, map, singleton)
@@ -47,7 +52,7 @@ class Tribute {
         {
             this.health -= HUNGER_HEALTH_DEPLETION;
             if (this.health <= 0) {
-                r.action = `${this.name} died of hunger.`;
+                r.action = `${this.getNameHTML()} died of hunger.`;
                 this.causeOfDeath = "Died of hunger.";
                 this.singleton.putInDeathQueue(this);
                 return r;
@@ -58,7 +63,7 @@ class Tribute {
         {
             this.health -= THIRST_HEALTH_DEPLETION;
             if (this.health <= 0) {
-                r.action = `${this.name} died of thirst.`;
+                r.action = `${this.getNameHTML()} died of thirst.`;
                 this.causeOfDeath = "Died of thirst.";
                 this.singleton.putInDeathQueue(this);
                 return r;
@@ -71,8 +76,11 @@ class Tribute {
         let moveWeight = 1 * ((this.previouslyFoundNothing && phase != "night") ? 10 : 1);
 
         //Recovering stats gets exponentially more likely the less of that stat they have
-        let foodWeight = 1 * (10/(this.hunger - 5));
-        let waterWeight = 1 * (10/(this.thirst - 5));
+        let foodWeight = 1 * (10/(this.hunger - 5)) * (this.hunger <= 0 && this.hasItemOfType("food")) ? 25 : 1;
+        let waterWeight = 1 * (10/(this.thirst - 5)) 
+                            * (this.thirst <= 0 
+                                && (this.hasItemOfType("water") || this.getTile().feature == TerrainFeature.LAKE))
+                                ? 25 : 1;
         let medicineWeight = 1 * (10 / this.health);
 
         //Try desparately to get a weapon if unarmed
@@ -82,7 +90,7 @@ class Tribute {
         let fightWeight = 1 * (this.health / 100) //less likely to fight if injured
                             * ((this.getTile().tributes.length > 1) ? 1 : 0) //won't fight if there isn't anyone to fight
                             * ((this.hasWeapon()) ? 1 : 0.4) //much less likely to fight if unarmed
-                            * ((this.singleton.tributes.length <= 5) ? 3 : 1); //more likely to fight if one of the last 5
+                            * ((this.singleton.tributes.length * 10 >= this.singleton.deadTributes.length) ? 5 : 1); //more likely to fight if one of the last 10%
         let sleepWeight = ((phase == "night") ? 1.5 : 0);
 
         let actionToTake = Util.randomFromWeight(
@@ -95,18 +103,7 @@ class Tribute {
             ["sleep", sleepWeight]]
         );
 
-        // let actionToTake = Util.randomFromWeight(
-        //     [[this.#move, moveWeight],
-        //     [this.#getFood, foodWeight],
-        //     [this.#getWater, waterWeight],
-        //     [this.#fight, fightWeight],
-        //     [this.#sleep, sleepWeight]]
-        // );
-
-
         let actionTaken;
-
-        // actionTaken = actionToTake(this);
 
         if (actionToTake == "getfood")
         {
@@ -190,9 +187,27 @@ class Tribute {
         if (this.hasItemOfType("water"))
         {
             let eaten = this.inventory.water.pop();
-            this.thirst += DEFAULT_FOOD_STRENGTH * eaten.strength;
+            this.thirst += DEFAULT_WATER_STRENGTH * eaten.strength;
             return `${this.getNameHTML()} drank ${eaten.name} from their inventory.`;
-        }else {
+        }
+        else if (this.getTile().terrain.feature == TerrainFeature.LAKE)
+        {
+            this.thirst += LAKE_THIRST_REGEN;
+            let output = `${this.getNameHTML()} drank from a lake.`;
+            let poisonRand = Math.random();
+            if (poisonRand < LAKE_POISON_CHANCE) {
+                output += ` The lake was poisoned!`;
+                this.health -= LAKE_MAX_POISON_DAMAGE * Math.random();
+                if (this.health <= 0) {
+                    output += ` ${this.getNameHTML()} died!`;
+                    this.causeOfDeath = "Drank from a poisoned lake.";
+                    this.singleton.putInDeathQueue(this);
+                }
+            }
+
+            return output;
+        }
+        else {
             return this.#forage("water");
         }
     }
@@ -286,6 +301,7 @@ class Tribute {
                 this.kills.push(`${opponent.name} (${opponent.district})`);
                 sneakAttackString += "killed!";
                 this.#lootOpponent(this, opponent);
+                this.singleton.putInDeathQueue(opponent);
             }else if (opponent.health <= 10)
             {
                 sneakAttackString += "gravely wounded.";
