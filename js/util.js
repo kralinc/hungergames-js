@@ -41,31 +41,12 @@ class Util {
     /**
      * @param: weights - 2D Array [value, weight]
     */
-    static randomFromWeight(weights)
+    static randomFromWeight(weights_)
     {
+        let weights = [...weights_];
         let sum = 0;
         //sort list
-        for (let i = 0; i < weights.length - 1; i++)
-        {
-            let min = weights[i][1];
-            let minItemIndex = i;
-            for (let j = i+1; j < weights.length; j++)
-            {
-                if (weights[j][1] < min)
-                {
-                    min = weights[j][1];
-                    minItemIndex = j;
-                }
-            }
-            if (min != weights[i][1])
-            {
-                const temp = weights[i];
-                weights[i] = weights[minItemIndex];
-                weights[minItemIndex] = temp;
-
-            }
-
-        }
+        weights.sort((a, b) => a[1] - b[1]);
 
         //sum their weights
         for (let item of weights)

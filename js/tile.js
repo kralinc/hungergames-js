@@ -74,6 +74,9 @@ class Tile {
 
     putItem(type, item)
     {
+        if (!this.items[type]) {
+            this.items[type] = [];
+        }
         this.items[type].push(item);
     }
 
