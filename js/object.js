@@ -13,10 +13,10 @@ class ItemUtil {
 
     static getRandomItem()
     {
-        const foodweight = 1.7;
-        const waterweight = 1.3;
-        const medicineweight = 0.1;
-        const weaponWeight = 2;
+        const foodweight = 1;
+        const waterweight = 1;
+        const medicineweight = 0.5;
+        const weaponWeight = 1.5;
 
         const itemType = Util.randomFromWeight([
             ["food", foodweight],
@@ -32,8 +32,7 @@ class ItemUtil {
     static getRandomWithinType(type)
     {
         const itemList = ItemUtil.ITEM_MASTERLIST[type];
-        const index = Math.floor(Math.random() * itemList.length);
-        return itemList[index];
+        return Util.getRandom(itemList);
     }
 
     static ITEM_MASTERLIST = {
@@ -51,7 +50,7 @@ class ItemUtil {
             {name: 'soup', strength: 1},
             {name: 'a regular potato', strength: 0.5},
             {name: 'a potato with butter', strength: 2},
-            {name: 'potato salad', strength: 1.7}
+            {name: 'potato salad', strength: 1.7},
         ],
         'water': [
             {name: 'bottled water', strength: 3},
@@ -64,11 +63,11 @@ class ItemUtil {
             {name: 'monster energy', strength: 1.8},
             {name: 'vitamin water', strength: 1},
             {name: 'koolaid', strength: 1.2},
-            {name: 'apple juice', strength: 1.5}
+            {name: 'apple juice', strength: 1.5},
         ],
         'medicine': [
-            {name: 'morphine', strength: 20},
-            {name: 'fentanyl', strength: 35},
+            {name: 'morphine', strength: 20}, 
+            {name: 'fentanyl', strength: 35}, 
             {name: 'bacitracin', strength: 15},
             {name: 'ibuprofen', strength: 10},
             {name: 'penecillin', strength: 20},
@@ -83,17 +82,17 @@ class ItemUtil {
             {name: 'a broadsword', strength: 3},
             {name: 'a katana', strength: 3.25},
             {name: 'a longsword', strength: 3},
-            {name: 'a sabre', strength: 2.66},
-            {name: 'a crossbow', strength: 6},
-            {name: 'a bow', strength: 5.5},
-            {name: 'a compound bow', strength: 6.25},
-            {name: 'a shiv', strength: 0.5},
-            {name: 'a hunting knife', strength: 1.25},
-            {name: 'a steak knife', strength: 0.8},
-            {name: 'a dagger', strength: 1},
-            {name: 'a sharp stick', strength: 0.75},
+            {name: 'a sabre', strength: 2.66}, 
+            {name: 'a crossbow', strength: 6}, 
+            {name: 'a bow', strength: 5.5}, 
+            {name: 'a compound bow', strength: 6.25}, 
+            {name: 'a shiv', strength: 0.5}, 
+            {name: 'a hunting knife', strength: 1.25}, 
+            {name: 'a steak knife', strength: 0.8}, 
+            {name: 'a dagger', strength: 1}, 
+            {name: 'a sharp stick', strength: 0.75}, 
             {name: 'a sharp rock', strength: 0.5},
-            {name: 'a Browning Citori 725 Trap Max Black/Silver/Walnut 12 Gauge 2-3/4in Over Under Shotgun - 32in', strength: 10},
+            {name: 'a shotgun', strength: 10},
         ]
     };
 }

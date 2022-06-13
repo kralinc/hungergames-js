@@ -16,8 +16,17 @@ const flavorTextSleep = [
     "${p0} sleeps in a tree."
 ];
 
+const diedInBattleFlavorText = [
+    "died in battle.",
+    "died fighting.",
+    "died in the struggle.",
+    "was killed.",
+    "didn't make it out alive.",
+];
+
 const flavorTexts = new Map();
 flavorTexts.set("sleep", flavorTextSleep);
+flavorTexts.set("diedInBattle", diedInBattleFlavorText);
 
 function Pos(x, y)
 {
@@ -32,31 +41,12 @@ class Util {
     /**
      * @param: weights - 2D Array [value, weight]
     */
-    static randomFromWeight(weights)
+    static randomFromWeight(weights_)
     {
+        let weights = [...weights_];
         let sum = 0;
         //sort list
-        for (let i = 0; i < weights.length - 1; i++)
-        {
-            let min = weights[i][1];
-            let minItemIndex = i;
-            for (let j = i+1; j < weights.length; j++)
-            {
-                if (weights[j][1] < min)
-                {
-                    min = weights[j][1];
-                    minItemIndex = j;
-                }
-            }
-            if (min != weights[i][1])
-            {
-                const temp = weights[i];
-                weights[i] = weights[minItemIndex];
-                weights[minItemIndex] = temp;
-
-            }
-
-        }
+        weights.sort((a, b) => a[1] - b[1]);
 
         //sum their weights
         for (let item of weights)
@@ -64,22 +54,27 @@ class Util {
             sum += item[1];
         }
         //redo weights
-        for (let item of weights)
+        for (let i = 1; i < weights.length; i++)
         {
-            item[1] = 1 - (item[1] / sum);
+            weights[i][1] += weights[i - 1][1];
+
         }
 
-        const rand = Math.random();
+        const rand = Math.random() * sum;
 
         for (let item of weights)
         {
-            if (item[1] < rand)
+            if (item[1] >= rand)
             {
                 return item[0];
             }
         }
 
         return weights[weights.length - 1][0];
+    }
+
+    static getRandom(list) {
+        return list[Util.randInt(0, list.length - 1)];
     }
 
     static randInt(min, max)
@@ -143,6 +138,7 @@ class Util {
         const texts = flavorTexts.get(type);
         return texts[Util.randInt(0,texts.length - 1)].format(p1, p2);
     }
+
 }
 
 export {Pos, Util};

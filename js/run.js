@@ -1,11 +1,13 @@
 import Singleton from "./singleton.js";
 import Tribute from "./tribute.js";
 import {Util} from "./util.js";
+import {Item, ItemUtil} from "./object.js";
 
 let SINGLETON;
 let NUMDISTRICTS = 0;
 
 $(() => {
+    //test();
     createDistricts(12);
 });
 
@@ -144,7 +146,9 @@ function createMap()
     {
         for (let j = 0; j < SINGLETON.map.size; j++)
         {
-            $(`#map-container`).append(`<div id='tile-${j}-${i}' class='tile'></div>`);
+            $(`#map-container`).append(`<div id='tile-${j}-${i}' class='tile 
+                                                                        ${SINGLETON.map.getTile(j, i).terrain.type} 
+                                                                        ${SINGLETON.map.getTile(j, i).terrain.getFeatureClass()}'></div>`);
             $(`#tile-${j}-${i}`).append(`<div id='tile-${j}-${i}-content' class='tile-content'></div>`);
         }
     }
@@ -156,13 +160,22 @@ function putStatsInModal(id)
     const allTributes = [...SINGLETON.tributes].concat(SINGLETON.deadTributes);
     const tribute = SINGLETON.findTributeById(tributeId, allTributes);
     $("#statsModalTitle").html(`${tribute.name} (${tribute.district})`);
-    $("#statsModalVitals").html(`Health: ${tribute.health}<br>Hunger: ${tribute.hunger.toFixed(2)}<br>Thirst: ${tribute.thirst.toFixed(2)}`);
+    $("#statsModalVitals").html(`Health: ${getStatWithColor(tribute.health.toFixed(2))}
+                                Hunger: ${getStatWithColor(tribute.hunger.toFixed(2))}
+                                Thirst: ${getStatWithColor(tribute.thirst.toFixed(2))}`);
     $("#statsModalDaysSurvived").html(`Days survived: ${tribute.daysSurvived}`);
     $("#statsModalImg").html($(`#trib-avatar-${tributeId}`)[0].outerHTML);
-    $("#statsModalLocation").html("Location: " + tribute.position.x + ", " + tribute.position.y);
+    $("#statsModalLocation").html(`Location: ${tribute.position.x}, ${tribute.position.y} (${tribute.getTile().terrain.feature} ${tribute.getTile().terrain.type})`);
     $("#statsModalKills").html(`Kills: ${tribute.kills.length} - ${tribute.kills}`);
     $("#statsModalCauseOfDeath").html(`Cause of death: ${tribute.causeOfDeath}`);
     $("#statsModalInventory").html(`Inventory: <pre>${JSON.stringify(tribute.inventory, null, 2)}</pre>`);
+}
+
+function getStatWithColor(stat) {
+    let red = 200 - ((stat / 100) * 200);
+    let green = (stat / 100) * 200;
+    let color = `rgb(${red},${green},0)`;
+    return `<p style='color: ${color}'>${stat}</p>`
 }
 
 function step()
@@ -234,3 +247,9 @@ $("#printout").on('click', (e) => {
 $("button[data-dismiss='modal']").on('click', () => {
     $("#statsModal").modal('hide');
 });
+
+function test() {
+    for (let i = 0; i < 10; i++) {
+        console.log(ItemUtil.getRandomWithinType("weapon"));
+    }
+}
